@@ -1,54 +1,66 @@
-import React from 'react'
+import React from 'react';
 
-const Termsandconditions = () => {
+function TermsAndConditions() {
   return (
-<p >
-<span className='text-xl font-bold justify-center items-center'>Terms and conditions </span> <br />
-
-<p className='item center '>Acceptance of Terms: By accessing or using our website, you agree to abide by these Terms and Conditions. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
-
-User Responsibilities: Users are responsible for maintaining the confidentiality of their account information, including passwords, and for restricting access to their devices. Users agree to accept responsibility for all activities that occur under their account.
-
-Booking and Rental Policies: Users must be of legal age and possess a valid driver's license to book or rent a car through our platform. All bookings are subject to availability and confirmation. Users must provide accurate and complete information during the booking process.
-
-Payment and Fees: Users agree to pay all applicable fees and charges associated with their bookings and rentals. Fees may include rental charges, insurance fees, fuel charges, and any additional services requested. Payment must be made using valid payment methods accepted by the platform.
-
-Cancellation and Refunds: Users may cancel their bookings according to the cancellation policy specified during the booking process. Refunds, if applicable, will be processed in accordance with our refund policy.
-
-Insurance and Liability: Users agree to abide by the terms of the rental agreement, including insurance coverage and liability limitations. Users are responsible for any damages or losses incurred during the rental period, including but not limited to accidents, theft, and negligence.
-
-Prohibited Activities: Users are prohibited from using our platform for any unlawful or unauthorized purpose, including but not limited to fraud, hacking, or transmitting malware. Users must not interfere with the proper functioning of the website or disrupt the experiences of other users.
-
-Intellectual Property: All content and materials available on our website, including but not limited to text, graphics, logos, and images, are the property of the platform or its licensors and are protected by copyright and other intellectual property laws.
-
-Privacy Policy: Users' privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and disclose personal information.
-
-Changes to Terms: We reserve the right to modify or update these Terms and Conditions at any time without prior notice. It is the responsibility of users to review these terms periodically for changes.
-
-Governing Law: These Terms and Conditions shall be governed by and construed in accordance with the laws of [jurisdiction], without regard to its conflict of law provisions.
-
-Contact Us: If you have any questions or concerns about these Terms and Conditions, please contact us at [contact information].
-
-</p>
-
-Policies:
-
-Privacy Policy: Our Privacy Policy outlines how we collect, use, and disclose personal information. This includes information provided by users during the registration, booking, and rental processes, as well as information collected through cookies and other tracking technologies. We are committed to protecting the privacy of our users and maintaining the security of their personal information.
-
-Cancellation Policy: Our Cancellation Policy specifies the conditions under which users may cancel their bookings and the associated fees or penalties. Users are encouraged to review the cancellation policy before making a booking.
-
-Refund Policy: Our Refund Policy outlines the circumstances under which users may be eligible for a refund and the process for requesting a refund. Refunds, if applicable, will be issued in accordance with this policy.
-
-Insurance Policy: Our Insurance Policy details the insurance coverage provided for rental vehicles and the terms and conditions of coverage. Users are responsible for understanding their insurance options and any limitations or exclusions that may apply.
-
-Safety and Security Policy: Our Safety and Security Policy emphasizes our commitment to ensuring the safety and security of our users and rental vehicles. This includes measures to verify the identity of users, conduct driver screenings, and maintain the mechanical integrity of rental vehicles.
-
-Compliance Policy: Our Compliance Policy outlines our commitment to compliance with applicable laws and regulations governing the operation of our platform. This includes requirements related to data protection, consumer rights, and fair business practices.
-
-Dispute Resolution Policy: Our Dispute Resolution Policy provides guidelines for resolving disputes between users and the platform, including procedures for mediation, arbitration, or legal action. Users are encouraged to contact us directly to address any concerns or disputes before pursuing formal remedies.
-
-Terms of Service for Car Owners: For users who list their vehicles for rent on our platform, additional terms and conditions may apply. These may include requirements related to vehicle eligibility, maintenance standards, and financial arrangements.
-</p>  )
+    <div className="bg-gray-200 min-h-screen flex items-center justify-center">
+      <div className="bg-gray-300 text-bleck p-8 rounded-lg shadow-lg w-full max-w-3xl">
+        <h1 className="text-2xl font-bold mb-4">TERMS & CONDITIONS</h1>
+        <p className="mb-6">
+          By using our website, you agree to these Terms and Conditions.
+        </p>
+        <div className="space-y-4">
+          <div>
+            <h2 className="font-semibold">User Responsibilities:</h2>
+            <p>
+              Maintain the confidentiality of your account information and restrict access to your devices. You are responsible for all activities under your account.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold">Booking and Rental Policies:</h2>
+            <p>
+              Users must be of legal age with a valid driver’s license to book or rent a car. All bookings are subject to availability and confirmation. Provide accurate and complete information during booking.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold">Payment and Fees:</h2>
+            <p>
+              Pay all applicable fees and charges for bookings and rentals, including rental, insurance, fuel, and additional services. Use valid payment methods accepted by the platform.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold">Insurance and Liability:</h2>
+            <p>
+              Abide by the rental agreement terms, including insurance coverage and liability limitations. Users are responsible for damages or losses during the rental period.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold">Prohibited Activities:</h2>
+            <p>
+              Do not use the platform for unlawful or unauthorized purposes, including fraud, hacking, or transmitting malware. Do not disrupt the website’s functioning or other users’ experiences.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold">Intellectual Property:</h2>
+            <p>
+              All content on the website is the property of the platform or its licensors and is protected by copyright and other intellectual property laws.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold">Changes to Terms:</h2>
+            <p>
+              We may modify these Terms and Conditions at any time without notice. Review these terms periodically for changes.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold">Contact Us:</h2>
+            <p>
+              For questions or concerns, contact us at manas4808294@gmail.com.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default Termsandconditions
+export default TermsAndConditions;

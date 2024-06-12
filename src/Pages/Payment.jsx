@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import jazzcash from "../assets/jazzcash.png";
 import easypaisa from "../assets/easypaisa.png"
 import car from "../assets/car.png";
-
+import { Link } from 'react-router-dom';
 
 const Payment = () => {
  
@@ -64,9 +64,12 @@ const Payment = () => {
                 // value={formData.postal} onChange={handleChange} 
                 className="w-full p-2 border rounded-lg" />
               </div>
+            
               <button type="button" className="w-full p-2 bg-gray-500 text-black rounded-lg mb-4">Pay with Card</button>
-              
+
+            <Link to ="./Home">  
               <button type="button" onClick={handleSubmit} className="w-full p-2 bg-gray-500 text- rounded-lg">Submit</button>
+              </Link>
             </form>
           </div>
           <div className="flex-1 flex justify-center">

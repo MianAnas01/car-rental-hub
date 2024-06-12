@@ -1,24 +1,23 @@
-
-import React from 'react';
-import Header from '../components/Header'; 
-import Profile from './Profile'; 
-import Uploadvehicle from './Uploadvehicle';
-import Footer from '../components/Footer';
-import { Link } from 'react-router-dom';
-
+import React from "react";
+import Header from "../components/Header";
+import Profile from "./Profile";
+import Uploadvehicle from "./Uploadvehicle";
+import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
+import BookNow from "./BookNow";
+import car2 from "../assets/car2.png";
 
 const Rental = () => {
   const Links = [
-    { to: '/Uploadvehicle', label: 'Uploadvehicle' },
-    { to: '/Profile', label: 'Profile' },
-
+    { to: "/Uploadvehicle", label: "Uploadvehicle" },
+    { to: "/Profile", label: "Profile" },
   ];
 
   return (
     <div>
-      <Header links={Links} /> 
-      
- {/* const cars = [ 
+      <Header links={Links} />
+
+      {/* const cars = [ 
    {
     id: 1,
     image: 'path-to-image', // replace with actual image path
@@ -60,76 +59,151 @@ const Rental = () => {
      (parseInt(car.price.replace(/,/g, '')) <= priceRange[1])
  ); */}
 
-
- 
-<div className="p-4 bg-gray-200">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold">Right Place Right Time.</h1>
-      </div>
-      <div className="flex justify-center mb-8">
-        <div className="flex space-x-4">
-           <select 
-          // value={selectedCompany} onChange={handleCompanyChange} 
-          className="p-2 border border-gray-300 rounded">
-            <option value="">Vehicle company</option>
-            {/* Add options for vehicle companies */}
-          </select> 
-          
-          <select 
-          // value={selectedType} onChange={handleTypeChange} 
-          className="p-2 border border-gray-300 rounded">
-            <option value="">Vehicle type</option>
-           {/* Add options for vehicle types  */}
-          </select>
-          <input
-            type="text"
-            // value={searchText}
-            // onChange={handleSearchTextChange}
-            placeholder="Search"
-            className="p-2 border border-gray-300 rounded"
-          />
-          <button className="p-2 bg-black text-white rounded">Search</button>
+      <div className="p-4 bg-gray-200">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold">Right Place Right Time.</h1>
         </div>
-      </div>
-      <div className="flex justify-center mb-8">
-        <label className="mr-4">Price:</label>
-        <input
-          type="range"
-          min="0"
-          max="5000"
-          // value={priceRange[1]}
-          // onChange={handlePriceChange}
-          className="slider"
-        />
-        {/* <span className="ml-4">{priceRange[1]}</span> */}
-      </div>
-      <div>
-        {/* {filteredCars.map(car => ( */}
-          <div 
-          // key={car.id} 
-          className="flex justify-between items-center p-4 mb-4 bg-gray-100 rounded-lg shadow">
-            {/* <img src={car.image} alt={car.name} className="w-32 h-20 object-cover" /> */}
+        <div className="flex justify-center mb-8 ">
+          <div className="flex space-x-4">
+            <select
+              // value={selectedCompany} onChange={handleCompanyChange}
+              className="p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">Vehicle company</option>
+              <option value="Honda">Honda</option>
+              <option value="Suzuki">Suzuki</option>
+              <option value="Audi">Audi</option>
+            </select>
+
+            <select
+              // value={selectedType} onChange={handleTypeChange}
+              className="p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">Vehicle type</option>
+              <option value="Honda">Car</option>
+              <option value="Suzuki">Jeep</option>
+              <option value="Audi">Wegan</option>
+            </select>
+            <input
+              type="text"
+              // value={searchText}
+              // onChange={handleSearchTextChange}
+              placeholder="Search"
+              className="p-2 border border-gray-300 rounded-lg"
+            />
+            <button className="p-2 bg-white text-black rounded-lg">Search</button>
+          </div>
+        </div>
+        <div className="flex justify-center mb-8">
+          <label className="mr-4">Price:</label>
+          <input
+            type="range"
+            min="0"
+            max="5000"
+            // value={priceRange[1]}
+            // onChange={handlePriceChange}
+            className="slider"
+          />
+          {/* <span className="ml-4">{priceRange[1]}</span> */}
+        </div>
+        <div>
+          {/* {filteredCars.map(car => ( */}
+          {/* <div
+            key={car.id}
+            className="flex justify-between items-center p-4 mb-4 bg-gray-100 rounded-lg shadow"
+          >
+            <img
+              src={car.image}
+              alt={car.name}
+              className="w-32 h-20 object-cover"
+            />
             <div className="flex-1 ml-4">
-              <h2 className="text-xl font-bold">
-                {/* {car.name} */}
-                </h2>
-              {/* <p>{car.seats} | {car.ac} | {car.transmission}</p> */}
+              <h2 className="text-xl font-bold">{car.name}</h2>
+              <p>
+                {car.seats} | {car.ac} | {car.transmission}
+              </p>
             </div>
             <div className="text-right">
-              <p className="text-xl font-bold">Rs. 
-              {/* {car.price} */}
+              <p className="text-xl font-bold">
+                Rs.
+                {car.price}
               </p>
               <button className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-              <Link to="/Booknow">Book Now</Link>
-</button>
+                <Link to="/Booknow">Book Now</Link>
+              </button>
+            </div>
+          </div> */}
+        </div>
+
+        <div className="flex items-center justify-center min-h-screen p-4">
+          <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full ">
+            <div className="flex items-center bg-red-500 text-white p-3 mb-4 rounded-lg">
+              <img
+                src={car2}
+                alt="Car"
+                className="w-32 h-auto rounded-lg mr-4"
+              />
+              <div className="flex-1">
+                <h3 className="text-xl font-bold">Audi Q3</h3>
+                <p>4 seaters • AC • Automatic</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xl font-bold">Rs. 3,000</p>
+                <p>per day</p>
+                <Link to="/BookNow">
+                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white hover:bg-red-600 rounded-lg">
+                    Book Now
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex items-center bg-red-500 text-white  p-3 mb-4 rounded-lg">
+              <img
+                src={car2}
+                alt="Car"
+                className="w-32 h-auto rounded-lg mr-4"
+              />
+              <div className="flex-1">
+                <h3 className="text-xl font-bold">Audi Q3</h3>
+                <p>4 seaters • AC • Automatic</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xl font-bold">Rs. 3,000</p>
+                <p>per day</p>
+                <Link to="/BookNow">
+                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-red-600">
+                    Book Now
+                  </button>
+                </Link>{" "}
+              </div>
+            </div>
+
+            <div className="flex items-center bg-red-500 text-white  p-3 mb-4 rounded-lg">
+              <img
+                src={car2}
+                alt="Car"
+                className="w-32 h-auto rounded-lg mr-4"
+              />
+              <div className="flex-1">
+                <h3 className="text-xl font-bold">Audi Q3</h3>
+                <p>4 seaters • AC • Automatic</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xl font-bold">Rs. 3,000</p>
+                <p>per day</p>
+                <Link to="/BookNow">
+                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-red-600">
+                    Book Now
+                  </button>
+                </Link>{" "}
+              </div>
             </div>
           </div>
-       
-        {/* } */}
+        </div>
       </div>
-    </div>    
-    
-    <Footer />
+
+      <Footer />
     </div>
   );
 };

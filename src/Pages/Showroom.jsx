@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom';
 
 const Showroom = () => {
   const Links = [
-    { to: '/Rentedvehicle', label: 'Rentedvehicle' },
-    { to: '/Uploadvehicle', label: 'Uploadvehicle' },
+    { to: '/Rentedvehicle', label: 'Rented Vehicle' },
+    { to: '/Uploadvehicle', label: 'Upload Vehicle' },
     { to: '/Profile', label: 'Profile' },
 
   ];
@@ -106,10 +106,10 @@ const Showroom = () => {
         {/* <span className="ml-4">{priceRange[1]}</span> */}
       </div>
       
-      <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
-      <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
+      <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full ">
        
-        <div className="flex items-center bg-red-500 text-white  p-3 mb-4 rounded-lg">
+        <div className="flex items-center bg-red-500 text-white p-3 mb-4 rounded-lg">
           <img src={car2} alt="Car" className="w-32 h-auto rounded-lg mr-4" />
           <div className="flex-1">
             <h3 className="text-xl font-bold">Audi Q3</h3>
@@ -119,7 +119,7 @@ const Showroom = () => {
             <p className="text-xl font-bold">Rs. 3,000</p>
             <p>per day</p>
             <Link to="/BookNow">
-              <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-red-600">Book Now</button>
+              <button className="mt-2 px-4 py-2 bg-gray-500 text-white hover:bg-red-600 rounded-lg">Book Now</button>
               </Link>
           </div>
         </div>
@@ -134,7 +134,7 @@ const Showroom = () => {
             <p className="text-xl font-bold">Rs. 3,000</p>
             <p>per day</p>
             <Link to="/BookNow">
-              <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-red-600">Book Now</button>
+              <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-red-600">Book Now</button>
               </Link>          </div>
         </div>
 
@@ -148,7 +148,7 @@ const Showroom = () => {
             <p className="text-xl font-bold">Rs. 3,000</p>
             <p>per day</p>
             <Link to="/BookNow">
-              <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-red-600">Book Now</button>
+              <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-red-600">Book Now</button>
               </Link>          </div>
         </div> 
       </div>

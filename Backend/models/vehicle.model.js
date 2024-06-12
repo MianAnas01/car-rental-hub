@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const  mongoose = require("mongoose");
 
 const vehicleSchema = new mongoose.Schema(
   {
@@ -29,8 +29,13 @@ const vehicleSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      // ????????????????????????
+      required: true,
     },
+    rentalId: {
+      type: String,
+      required: true,
+    },
+    
   },
   { timestamps: true }
 );

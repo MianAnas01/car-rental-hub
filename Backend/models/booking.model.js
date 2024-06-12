@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require( "mongoose");
 
 const bookingSchema = new mongoose.Schema(
   {
@@ -36,13 +36,21 @@ const bookingSchema = new mongoose.Schema(
         required: true,
       },
       vehicleId: {
-        type: String,
+        type: mongoose.Types.schema.objectId,
+        ref: "Vehicle",
         required: true,
       },
       customerId: {
-        type: String,
+        type: mongoose.Types.Schema.objectId,
+        ref: "User",
         required: true,
-      }
+      },
+    status:{
+      type: String,
+      enum: ["decline", "accept", "request"],
+      default: "request",
+
+    }
 
   },
   { timestamps: true }

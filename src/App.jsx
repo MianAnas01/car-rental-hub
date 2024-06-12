@@ -15,7 +15,7 @@ import Uploadvehicle from './Pages/Uploadvehicle'
 import Payment from './Pages/Payment'
 import Termsandconditions from './Pages/Termsandconditions'
 import Rentedvehicle from './Pages/Rentedvehicle'
-// import Contract from './Pages/Contract'
+import Contract from './Pages/Contract'
 
 import '@fortawesome/fontawesome-free/css/all.css';
 
@@ -40,7 +40,7 @@ function App() {
         <Route path='/BookNow' element={<BookNow/>} />
         <Route path='/Payment' element={<Payment />} />
         <Route path='/Termsandconditions' element={<Termsandconditions />} />
-        {/* <Route path='/Contract' element={<Contract />} /> */}
+        <Route path='/Contract' element={<Contract />} />
 
         <Route path='/Footer' element={<Footer />} />
 

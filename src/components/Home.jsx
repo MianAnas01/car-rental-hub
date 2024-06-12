@@ -18,9 +18,9 @@ const Profile = () => {
     <div className="flex flex-col ustify-center min-h-screen bg-gray-200 p-4">
       <Header links={Links} />
 
-      <div className="grid grid-cols-2 h-screen">
+      <div className="grid grid-cols-2 h-screen mt-16">
         <div className="mb-10 mt-20 ml-10 flex h-full">
-          <h1 className="text-6xl font-bold ml-4 mt-10">
+          <h1 className="text-8xl font-bold ml-4 mt-10">
             <span className="text-black px-2 py-1">RENT A RIDE</span>
             <br />
             <span className="text-red-500">BOOK A RIDE</span>
@@ -33,8 +33,8 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 h-screen">
-        <div className="bg-red-500 rounded-full w-96 h-96 flex items-center justify-center">
+      <div className="grid grid-cols-2 h-screen pl-16">
+        <div className="bg-red-500 rounded-full w-96 h-96 flex items-center justify-center ">
           {" "}
           {/* Added justify-center */}
           <img
@@ -45,7 +45,7 @@ const Profile = () => {
         </div>
 
         <div className="md:flex-row items-center md:items-start pr-6 shadow-lg h-80">
-          <div className="w-550 h-484">
+          <div className="w-550 h-484 pr10">
             <h2 className="text-4xl font-bold mb-2">HOW DOES IT WORK?</h2>
             <p className="text-gray-700 text-2xl font-bold">
               A car rental hub website serves as a centralized platform for

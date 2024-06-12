@@ -9,7 +9,7 @@ const Footer = () => {
             READY FOR THE <br /> NEW <span className="text-red-500">  ERA?</span>
           </h2>
           <p className='ml-2'> Contact US</p>
-          <p className='ml-2'>info@carrentalhub.com</p>
+          <p className='ml-2'>manas4808294@gmail.com</p>
         </div>
         <div className="text-center md:text-right">
           <p>@2024 Car Rental Hub All Rights Reserved</p>
