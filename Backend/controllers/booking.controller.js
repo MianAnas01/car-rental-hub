@@ -22,7 +22,9 @@ const newBooking = async (req, res) => {
         res.status(500).send("Internal Server Error.");
     }
   };
-  const ConfirmBooking = async (req, res) => {
+
+//   confirm booking
+  const confirmBooking = async (req, res) => {
     try {
       const bookingId = req.params.id;
       const updatedData = {};
@@ -45,7 +47,9 @@ const newBooking = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
       }
     };
-  const ConfirmedBooking = async (req, res) => {
+
+    // confirmed bookings
+  const confirmedBooking = async (req, res) => {
     try {
       const allBookings = await Booking.find()
         .populate("customer", "name")
@@ -61,4 +65,4 @@ const newBooking = async (req, res) => {
       }
     };
   
-  module.exports = { newBooking, ConfirmBooking, ConfirmedBooking }
+  module.exports = { newBooking, confirmBooking, confirmedBooking }
