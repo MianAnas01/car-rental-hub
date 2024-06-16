@@ -7,9 +7,9 @@ const jwt = require("jsonwebtoken");
 const isEmailInUse = async (email) => {
   try {
     const existingUser = await User.findOne({ email });
-    return !!existingUser; 
+    return !!existingUser;
   } catch (error) {
-    console.error('Error checking email:', error);
+    console.error("Error checking email:", error);
     throw error;
   }
 };
@@ -18,16 +18,15 @@ const userSignup = async (req, res) => {
   try {
     let Success = false;
     let newUser;
-    const { firstName, lastName, address, contact, email, password, role } =
-      req.body;
+    const { firstName, lastName, address, contact, email, password, role } = req.body;
 
-      const emailInUse = await isEmailInUse(email);
-      if (emailInUse) {
-        return res.status(400).json({
-          success: false,
-          message: 'Email is already in use.'
-        });
-      }
+    const emailInUse = await isEmailInUse(email);
+    if (emailInUse) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is already in use.",
+      });
+    }
 
     const hashedPassword = await bcryptjs.hash(password, 10);
     const normalizedRole = role.toLowerCase();
@@ -61,7 +60,7 @@ const userSignup = async (req, res) => {
     Success = true;
     const data = {
       user: {
-        id: newUser.id,    
+        id: newUser.id,
         role: role,
       },
     };
@@ -81,55 +80,53 @@ const userSignup = async (req, res) => {
   }
 };
 
-// login 
-
+// login
 
 const userLogin = async (req, res, next) => {
- 
   const { email, password } = req.body;
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) return res.status(404).json({ message: "User not found!" });
 
     const validPassword = bcryptjs.compareSync(password, validUser.password);
-    if (!validPassword) return res.status(401).json({ message: "Wrong credentials!" });
+    if (!validPassword)
+      return res.status(401).json({ message: "Wrong credentials!" });
 
     req.user = validUser;
-    
+
     // Generate JWT token
     const token = generateToken(validUser._id);
 
     const { password: pass, ...rest } = validUser._doc;
 
-    res.cookie('access_token', token, {
+    res.cookie("access_token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', 
-      sameSite: 'none',
-      maxAge: 24 * 60 * 60 * 1000, 
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     let profileType;
-    if (validUser.userType === 'customer') {
-      profileType = 'customer';
-    } else if (validUser.userType === 'rental') {
-      profileType = 'rental';
-    } 
+    if (validUser.userType === "customer") {
+      profileType = "customer";
+    } else if (validUser.userType === "rental") {
+      profileType = "rental";
+    }
 
-    res.status(200).json({ 
+    res.status(200).json({
       profileType,
       ...rest,
-      token: token // Add token to response data
+      token: token, // Add token to response data
     });
   } catch (error) {
-    console.error('Error during user sign-in:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error during user sign-in:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
-
 
 //  edit profile
 
@@ -138,7 +135,7 @@ const editProfile = async (req, res) => {
     // Verify JWT token and extract user ID
     const token = req.cookies.access_token;
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized: Missing token' });
+      return res.status(401).json({ message: "Unauthorized: Missing token" });
     }
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -146,7 +143,9 @@ const editProfile = async (req, res) => {
 
     // Check if the user ID from token matches the ID in the request params
     if (userId !== req.params.id) {
-      return res.status(401).json({ message: 'You can only update your own account!' });
+      return res
+        .status(401)
+        .json({ message: "You can only update your own account!" });
     }
 
     // Proceed with profile update
@@ -157,20 +156,24 @@ const editProfile = async (req, res) => {
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found!' });
+      return res.status(404).json({ message: "User not found!" });
     }
 
     const { password, ...rest } = updatedUser._doc;
 
     res.status(200).json(rest);
   } catch (error) {
-    console.error('Error during profile update:', error);
+    console.error("Error during profile update:", error);
     if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+      return res.status(401).json({ message: "Unauthorized: Invalid token" });
     }
-    res.status(500).json({ message: 'An error occurred while updating the profile. Please try again later.' });
+    res
+      .status(500)
+      .json({
+        message:
+          "An error occurred while updating the profile. Please try again later.",
+      });
   }
 };
 
-  
-  module.exports = { userSignup, userLogin, editProfile };
+module.exports = { userSignup, userLogin, editProfile };
