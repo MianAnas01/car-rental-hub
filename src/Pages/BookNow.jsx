@@ -102,7 +102,7 @@ const BookNow = () => {
               name="date"
               // value={formData.destination}
               // onChange={handleChange}
-              placeholder="Enter Date"
+              placeholder="Start Date"
               className="w-2/5 p-2 border rounded focus:outline-none focus:border-blue-500"
             />
             <span> To: </span>
@@ -111,7 +111,7 @@ const BookNow = () => {
               name="date"
               // value={formData.destination}
               // onChange={handleChange}
-              placeholder="Enter Date"
+              placeholder="End Date"
               className="w-2/5 p-2 border rounded focus:outline-none focus:border-blue-500"
             />
           </div>

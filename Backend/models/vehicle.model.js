@@ -14,12 +14,12 @@ const vehicleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    manual,
-    auto: {
+    transmission: {
       type: String,
+      enum: ['manual', 'auto'], // Ensure the value is either 'manual' or 'auto'
       required: true,
     },
-    renPerDay: {
+    rentPerDay: {
       type: Number,
       required: true,
     },
