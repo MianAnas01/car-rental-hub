@@ -4,6 +4,4 @@ const router = express.Router();
  
 router.post("/book", newBooking )
 
-
-
 module.exports = router;

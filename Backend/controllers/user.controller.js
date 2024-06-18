@@ -4,77 +4,67 @@ const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
 // signup
-const isEmailInUse = async (email) => {
-  try {
-    const existingUser = await User.findOne({ email });
-    return !!existingUser;
-  } catch (error) {
-    console.error("Error checking email:", error);
-    throw error;
-  }
-};
-
 const userSignup = async (req, res) => {
   try {
-    let Success = false;
-    let newUser;
+    let success = false;
+    let user;
     const { firstName, lastName, address, contact, email, password, role } = req.body;
 
-    const emailInUse = await isEmailInUse(email);
-    if (emailInUse) {
-      return res.status(400).json({
-        success: false,
-        message: "Email is already in use.",
-      });
-    }
+    // Check if the email is already in use
+    const existingUser = await User.findOne({ email });
 
+    // Hash the password
     const hashedPassword = await bcryptjs.hash(password, 10);
-    const normalizedRole = role.toLowerCase();
 
-    if (normalizedRole === "customer") {
-      newUser = await User.create({
-        firstName,
-        lastName,
-        address,
-        contact,
-        email,
-        password: hashedPassword,
-      });
-    } else if (normalizedRole === "rental") {
-      newUser = await User.create({
-        firstName,
-        lastName,
-        address,
-        contact,
-        email,
-        password: hashedPassword,
-      });
+    if (existingUser) {
+      // Update existing user with the new role
+      if (role.toLowerCase() === 'customer') {
+        existingUser.isCustomer = true;
+      } else if (role.toLowerCase() === 'rental') {
+        existingUser.isRental = true;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid role provided. Please specify 'Customer' or 'Rental'.",
+        });
+      }
+      // Save the updated user
+      user = await existingUser.save();
     } else {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid role provided. Please specify 'Customer' or 'Rental'.",
+      // Create a new user
+      const newUser = new User({
+        firstName,
+        lastName,
+        address,
+        contact,
+        email,
+        password: hashedPassword,
+        isCustomer: role.toLowerCase() === 'customer',
+        isRental: role.toLowerCase() === 'rental',
       });
+
+      // Save the new user
+      user = await newUser.save();
     }
 
-    Success = true;
+    success = true;
     const data = {
       user: {
-        id: newUser.id,
+        id: user.id,
         role: role,
       },
     };
 
     res.status(201).json({
-      success: Success,
-      message: `${role} created successfully`,
+      success: success,
+      message: `${role} created/updated successfully`,
       data: data,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "Failed to create user",
+      message: "Failed to create/update user",
       error: error.message,
     });
   }

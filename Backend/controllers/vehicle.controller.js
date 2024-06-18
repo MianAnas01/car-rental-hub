@@ -1,50 +1,39 @@
-const multer = require("multer");
-const path = require("path");
-
-// Multer configuration for handling file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./vehicles"); // Directory where vehicle images will be stored
-  },
-  filename: function (req, file, cb) {
-    // Generating a unique filename for the uploaded image
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage: storage });
+const { Vehicle } = require("../models/vehicle.model");
+const path = require("path")
 
 // upload Vehicle
 const uploadVehicle = async (req, res) => {
   try {
     // Check if the user making the request has the role 'rental'
-    if (req.user.role !== "rental") {
-      return res
-        .status(403)
-        .send("Forbidden: Only users with role 'rental' can upload vehicles.");
-    }
+    // if (req.user.role !== "rental") {
+    //   return res
+    //     .status(403)
+    //     .send("Forbidden: Only users with role 'rental' can upload vehicles.");
+    // }
 
-    const presentBrand = await Brand.findById(req.body.brand);
+    // const presentBrand = await Brand.findById(req.body.brand);
 
     // Check if an image is included in the request
     if (!req.file) {
       return res.status(400).send("Bad Request: Image file is required.");
     }
+    req.file.path = path.join('uploads', req.file.filename); // Store the file path
 
-    const imageUrl = req.file.path; // Path to the uploaded image
-
-    const manualOrAuto = req.body["manual/auto"];
+    console.log(req.body, req.file);
+    const imageUrl = `${process.env.BACKEND_URL}/${req.file.path}`; // Path to the uploaded image
 
     const NewVehicle = await Vehicle.create({
-      brand: req.body.brand,
-      model: req.body.model,
-      seats: req.body.seats,
+      carBrand: req.body.carBrand,
+      carModel: req.body.carModel,
+      noOfSeats: req.body.noOfSeats,
       // Set the property dynamically based on the value of manual/auto
-      [manualOrAuto]: true,
-      rentperday: req.body.rentperday,
-      carlocation: req.body.carlocation,
+      rentPerDay: req.body.rentPerDay,
+      carlocation: req.body.carLocation,
       plateNumber: req.body.plateNumber,
-      image: imageUrl, // Store the image URL or path in the database
+      avatar: imageUrl,
+      address: req.body.address,
+      rentalId: req.body.rentalId,
+      transmission: req.body.transmission,
     });
 
     res.json(NewVehicle);
@@ -53,6 +42,27 @@ const uploadVehicle = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+// get Vehicle
+
+const GetVehicles = async (req, res) => {
+  try {
+    let vehicles;
+    if (req.body.rentalId) {
+      // If rentalId is provided in the request body, filter vehicles by rentalId
+      vehicles = await Vehicle.find({ rentalId: req.body.rentalId }).populate('brand', 'name').exec();
+    }
+    
+    const activeVehicles = vehicles.filter((vehicle) => vehicle.active);
+    res.send(activeVehicles);
+  } catch (error) {
+    console.error(error.message);
+    // Log the error directly here
+    console.error("Error in GetVehicles:", error.message);
+    res.status(500).send("Internal Server Error.");
+  }
+};
+
+
 
 // vehicle Not Available
 const vehicleNotAvailable = async (req, res) => {
@@ -76,4 +86,4 @@ const vehicleNotAvailable = async (req, res) => {
   }
 };
 
-module.exports = { uploadVehicle, vehicleNotAvailable };
+module.exports = { uploadVehicle, GetVehicles , vehicleNotAvailable };

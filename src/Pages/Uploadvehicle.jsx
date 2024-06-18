@@ -1,21 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
-import Showroom from "./Showroom";
-import Profile from "./Profile";
-import car2 from "../assets/car2.png";
-
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import car2 from "../assets/car2.png";
+import axios from "axios";
 
 const Uploadvehicle = () => {
-  const Links = [
-    { to: "/Showroom", label: "Showroom" },
-    { to: "/Profile", label: "Profile" },
-  ];
+  const [formData, setFormData] = useState({
+    brand: "",
+    model: "",
+    seats: "",
+    manual: "",
+    rent: "",
+    location: "",
+    licensePlate: "",
+    image: null
+  });
 
-  return (
-    <div>
-      <Header links={Links} />
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      image: e.target.files[0]
+    }));
+  };
+
+  const handleSubmit = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("carBrand", formData.brand);
+    formDataToSend.append("carModel", formData.model);
+    formDataToSend.append("noOfSeats", formData.seats);
+    formDataToSend.append("transmission", formData.manual);
+    formDataToSend.append("rentPerDay", formData.rent);
+    formDataToSend.append("address", formData.location);
+    formDataToSend.append("licensePlate", formData.licensePlate);
+    formDataToSend.append("images", formData.image);
+    formDataToSend.append("rentalId", "6671cd0db6ccb356edc2b8cb");
+    const {data}  = await axios.post("http://localhost:8000/api/vehicle/rental/uploadvihicle", formDataToSend)
+    console.log(data);
+  }
+ 
+    return (
+       <div>
+      <Header />
 
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
         <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full flex flex-col md:flex-row items-center">
@@ -28,7 +62,8 @@ const Uploadvehicle = () => {
                   type="text"
                   name="brand"
                   placeholder="Car Brand"
-                  // value={formData.brand} onChange={handleChange}
+                  value={formData.brand}
+                  onChange={handleChange}
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
@@ -37,7 +72,8 @@ const Uploadvehicle = () => {
                   type="text"
                   name="model"
                   placeholder="Car Model"
-                  // value={formData.model} onChange={handleChange}
+                  value={formData.model}
+                  onChange={handleChange}
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
@@ -46,7 +82,8 @@ const Uploadvehicle = () => {
                   type="text"
                   name="seats"
                   placeholder="How many seats?"
-                  // value={formData.seats} onChange={handleChange}
+                  value={formData.seats}
+                  onChange={handleChange}
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
@@ -55,7 +92,8 @@ const Uploadvehicle = () => {
                   type="text"
                   name="manual"
                   placeholder="Manual/Auto"
-                  // value={formData.manual} onChange={handleChange}
+                  value={formData.manual}
+                  onChange={handleChange}
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
@@ -64,7 +102,8 @@ const Uploadvehicle = () => {
                   type="text"
                   name="rent"
                   placeholder="Rent per day/per week in PKR"
-                  // value={formData.rent} onChange={handleChange}
+                  value={formData.rent}
+                  onChange={handleChange}
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
@@ -73,27 +112,35 @@ const Uploadvehicle = () => {
                   type="text"
                   name="location"
                   placeholder="Car location"
-                  // value={formData.location} onChange={handleChange}
+                  value={formData.location}
+                  onChange={handleChange}
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
               <div className="mb-4">
                 <input
                   type="text"
-                  name="License Plate"
+                  name="licensePlate"
                   placeholder="License Plate Number"
-                  // value={formData.location} onChange={handleChange}
+                  value={formData.licensePlate}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+              <div className="mb-4">
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleImageChange}
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
               <button
                 type="button"
-                // onClick={handleSubmit}
+                onClick={handleSubmit}
                 className="w-full p-2 bg-gray-500 text-white rounded-lg"
               >
-                {/* <Link to="YourVehivle">    */}
                 Upload
-                {/* </Link>  */}
               </button>
             </form>
           </div>

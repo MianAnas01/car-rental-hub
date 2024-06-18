@@ -42,4 +42,4 @@ const vehicleSchema = new mongoose.Schema(
 
 const Vehicle = mongoose.model("Vehicle", vehicleSchema);
 
-export default Vehicle;
+module.exports =  { Vehicle };
