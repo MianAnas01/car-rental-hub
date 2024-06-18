@@ -6,6 +6,7 @@ const dbConnection = require("./db");
 const userRoute = require("./routes/userroute");
 const vehcileRoute = require("./routes/vehicleroute")
 const bookingRoute = require("./routes/bookingroute")
+const paymentRoute = require("./routes/paymentroute")
 const cookieParser = require("cookie-parser");
 
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use("/api/user", userRoute);
 app.use("/api/vehicle", vehcileRoute);
 app.use("/api/booking", bookingRoute);
+app.use("/api/payment", paymentRoute)
 
 app.get("/test", (req, res) => {
   res.send("server working");
