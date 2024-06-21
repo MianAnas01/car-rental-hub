@@ -8,7 +8,7 @@ const userSignup = async (req, res) => {
   try {
     let success = false;
     let user;
-    const { firstName, lastName, address, contact, email, password, role } = req.body;
+    const { firstName, lastName, address, contactNumber, email, password, role } = req.body;
 
     // Check if the email is already in use
     const existingUser = await User.findOne({ email });
@@ -18,9 +18,9 @@ const userSignup = async (req, res) => {
 
     if (existingUser) {
       // Update existing user with the new role
-      if (role.toLowerCase() === 'customer') {
+      if (role === 'customer') {
         existingUser.isCustomer = true;
-      } else if (role.toLowerCase() === 'rental') {
+      } else if (role=== 'rental') {
         existingUser.isRental = true;
       } else {
         return res.status(400).json({
@@ -36,7 +36,7 @@ const userSignup = async (req, res) => {
         firstName,
         lastName,
         address,
-        contact,
+        contactNumber,
         email,
         password: hashedPassword,
         isCustomer: role.toLowerCase() === 'customer',
@@ -157,12 +157,7 @@ const editProfile = async (req, res) => {
     if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({ message: "Unauthorized: Invalid token" });
     }
-    res
-      .status(500)
-      .json({
-        message:
-          "An error occurred while updating the profile. Please try again later.",
-      });
+    res.status(500).json({ message:"An error occurred while updating the profile. Please try again later.", });
   }
 };
 

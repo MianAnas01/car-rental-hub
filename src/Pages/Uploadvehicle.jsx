@@ -127,14 +127,9 @@ const Uploadvehicle = () => {
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
-              <div className="mb-4">
-                <input
-                  type="file"
-                  name="image"
-                  onChange={handleImageChange}
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
+              {/* <div className="mb-4"> */}
+               
+              {/* </div> */}
               <button
                 type="button"
                 onClick={handleSubmit}
@@ -144,10 +139,21 @@ const Uploadvehicle = () => {
               </button>
             </form>
           </div>
-          <div className="flex-1 flex justify-center">
-            <div className="bg-red-500 rounded-full w-32 h-32 flex items-center justify-center">
-              <p className="text-white mt-2">upload image</p>
-            </div>
+          <div className="flex-1 flex justify-center"> 
+          <div 
+  className="bg-red-500 rounded-full w-32 h-32 flex items-center justify-center relative cursor-pointer"
+  onClick={() => document.getElementById('fileInput').click()}
+>
+  <input
+    id="fileInput"
+    type="file"
+    name="image"
+    onChange={handleImageChange}
+    className="hidden"
+  />
+  <p className="text-white mt-2">Add Image</p>
+</div>
+
           </div>
         </div>
       </div>

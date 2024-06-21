@@ -1,68 +1,129 @@
+// import React from 'react';
+// import { Link } from 'react-router-dom';
 
-import React from 'react';
+// const SignUpForm = () => {
+
+//   const handleChange = (e) => {
+//     setFormData({
+//       ...formData,
+//       [e.target.name]: e.target.value
+//     });
+//   };
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     console.log(formData);
+//     // Handle form submission logic here
+//   };
+
+//   return (
+//     <div className="flex justify-center items-center h-screen bg-gray-200">
+//       <div className="bg-gray-300 p-8 rounded-lg shadow-lg w-96">
+//         <h2 className="text-2xl font-bold mb-4 text-center">Create An Account</h2>
+//         <p className="mb-6 text-center">Create a free account to start using our services for free!</p>
+//         <form onSubmit={handleSubmit}>
+//           <div className="grid grid-cols-2 gap-4 mb-4">
+//             <input
+//               type="text"
+//               name="firstName"
+//               placeholder="First Name"
+//               // value={formData.firstName}
+//               onChange={handleChange}
+//               className="p-2 border border-gray-300 rounded"
+//             />
+//             <input
+//               type="text"
+//               name="lastName"
+//               placeholder="Last Name"
+//               // value={formData.lastName}
+//               onChange={handleChange}
+//               className="p-2 border border-gray-300 rounded"
+//             />
+//           </div>
+//           <div className="mb-4">
+//             <input
+//               type="text"
+//               name="address"
+//               placeholder="Address"
+//               // value={formData.address}
+//               onChange={handleChange}
+//               className="w-full p-2 border border-gray-300 rounded"
+//             />
+//           </div>
+//           <div className="mb-4">
+//             <input
+//               type="text"
+//               name="contactNumber"
+//               placeholder="Contact No."
+//               // value={formData.contactNumber}
+//               onChange={handleChange}
+//               className="w-full p-2 border border-gray-300 rounded"
+//             />
+//           </div>
+//           <div className="mb-4">
+//             <input
+//               type="email"
+//               name="email"
+//               placeholder="Enter Email Address"
+//               // value={formData.email}
+//               onChange={handleChange}
+//               className="w-full p-2 border border-gray-300 rounded"
+//             />
+//           </div>
+//           <div className="mb-4">
+//             <input
+//               type="password"
+//               name="password"
+//               placeholder="Password"
+//               // value={formData.password}
+//               onChange={handleChange}
+//               className="w-full p-2 border border-gray-300 rounded"
+//             />
+//           </div>
+//           <Link to="/Login">
+//         <button
+//           // onClick={handleCustomerLogin}
+//           className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
+//         >
+//           SignUp as a customer
+//         </button>
+//        </Link>
+
+//         <Link to="/Login">
+//         <button
+//           // onClick={handleRentalLogin}
+//           className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
+//         >
+//           SignUp as a rental
+//         </button>
+//        </Link>
+
+//         </form>
+//         <div className="text-center mt-4">
+//           <p className='text-gray-600'>Already have an account? <a href="/login" className="text-black">Login</a></p>
+//         </div>
+//       </div>
+//     </div>
+
+//   );
+// }
+
+// export default SignUpForm;
+
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const SignUpForm = () => {
-  // return (
-  //   <div className="flex items-center justify-center min-h-screen bg-gray-200 px-4">
-  //     <div className="w-full max-w-md p-8 space-y-6 bg-gray-300 rounded shadow-md">
-  //       <h2 className="text-2xl font-bold text-center">Create An Account</h2>
-  //       <p className="text-center text-gray-600">Create free account to start using our services for free!</p>
-  //       <form className="space-y-4">
-  //         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-2">
-  //           <input
-  //             type="text"
-  //             placeholder="First Name"
-  //             className="w-full p-2 border border-gray-300 rounded-lg"
-  //           />
-  //           <input
-  //             type="text"
-  //             placeholder="Last Name"
-  //             className="w-full p-2 border border-gray-300 rounded-lg"
-  //           />
-  //         </div>
-  //         <input
-  //           type="text"
-  //           placeholder="Address"
-  //           className="w-full p-2 border border-gray-300 rounded-lg"
-  //         />
-  //         <input
-  //           type="text"
-  //           placeholder="Contact No."
-  //           className="w-full p-2 border border-gray-300 rounded-lg"
-  //         />
-  //         <input
-  //           type="email"
-  //           placeholder="Email Address"
-  //           className="w-full p-2 border border-gray-300 rounded"
-  //         />
-  //         <input
-  //           type="password"
-  //           placeholder="Password"
-  //           className="w-full p-2 border border-gray-300 rounded-lg"
-  //         />
-  //         <button
-  //           type="submit"
-  //           className="w-full p-2 font-bold text-white bg-gray-400 rounded hover:bg-gray-500"
-  //         >
-  //           Create Account
-  //         </button>
-  //       </form>
-  //       <p className="text-center text-gray-600">
-  //         Already have an account? <Link to="/Login" className="text-black">Login</Link>
-  //       </p>
-  //     </div>
-  //   </div>
-
-
-  // const [formData, setFormData] = useState({
-  //   firstName: '',
-  //   lastName: '',
-  //   address: '',
-  //   contactNumber: '',
-  //   email: '',
-  //   password: ''
-  // });
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    address: '',
+    contactNumber: '',
+    email: '',
+    password: '',
+    role: '', // Assuming you have a role field
+  });
 
   const handleChange = (e) => {
     setFormData({
@@ -71,10 +132,17 @@ const SignUpForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Handle form submission logic here
+    try {
+      const response = await axios.post('http://localhost:8000/api/user/sigup', formData);
+      const { data } = response;
+      console.log('Vehicle uploaded:', data);
+      // Handle success or redirect accordingly
+    } catch (error) {
+      console.error('Error uploading vehicle:', error);
+      // Handle error accordingly
+    }
   };
 
   return (
@@ -88,7 +156,7 @@ const SignUpForm = () => {
               type="text"
               name="firstName"
               placeholder="First Name"
-              // value={formData.firstName}
+              value={formData.firstName}
               onChange={handleChange}
               className="p-2 border border-gray-300 rounded"
             />
@@ -96,7 +164,7 @@ const SignUpForm = () => {
               type="text"
               name="lastName"
               placeholder="Last Name"
-              // value={formData.lastName}
+              value={formData.lastName}
               onChange={handleChange}
               className="p-2 border border-gray-300 rounded"
             />
@@ -106,7 +174,7 @@ const SignUpForm = () => {
               type="text"
               name="address"
               placeholder="Address"
-              // value={formData.address}
+              value={formData.address}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
@@ -116,7 +184,7 @@ const SignUpForm = () => {
               type="text"
               name="contactNumber"
               placeholder="Contact No."
-              // value={formData.contactNumber}
+              value={formData.contactNumber}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
@@ -126,7 +194,7 @@ const SignUpForm = () => {
               type="email"
               name="email"
               placeholder="Enter Email Address"
-              // value={formData.email}
+              value={formData.email}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
@@ -136,38 +204,23 @@ const SignUpForm = () => {
               type="password"
               name="password"
               placeholder="Password"
-              // value={formData.password}
+              value={formData.password}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
           </div>
-          <Link to="/Login">
-        <button
-          // onClick={handleCustomerLogin}
-          className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
-        >
-          SignUp as a customer
-        </button>
-       </Link>
-
-        <Link to="/Login">
-        <button 
-          // onClick={handleRentalLogin}
-          className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
-        >
-          SignUp as a rental
-        </button>
-       </Link>
-          
+          <button
+            type="submit"
+            className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
+          >
+            Sign Up
+          </button>
         </form>
         <div className="text-center mt-4">
-          <p className='text-gray-600'>Already have an account? <a href="/login" className="text-black">Login</a></p>
+          <p className='text-gray-600'>Already have an account? <Link to="/login" className="text-black">Login</Link></p>
         </div>
       </div>
     </div>
-
-
-
   );
 }
 

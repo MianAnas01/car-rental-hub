@@ -43,26 +43,62 @@ const uploadVehicle = async (req, res) => {
   }
 };
 // get Vehicle
-
 const GetVehicles = async (req, res) => {
   try {
     let vehicles;
-    if (req.body.rentalId) {
+    const vehicleId = req.params.id;
+
+    if (vehicleId) {
+      // If a vehicle ID is provided in the URL, fetch the specific vehicle
+      vehicles = await Vehicle.findById(vehicleId);
+      if (!vehicles) {
+        return res.status(404).send("Vehicle not found.");
+      }
+    } else if (req.body.rentalId) {
       // If rentalId is provided in the request body, filter vehicles by rentalId
-      vehicles = await Vehicle.find({ rentalId: req.body.rentalId }).populate('brand', 'name').exec();
-    }
-    
-    const activeVehicles = vehicles.filter((vehicle) => vehicle.active);
-    res.send(activeVehicles);
+      vehicles = await Vehicle.find({ rentalId: req.body.rentalId });
+    } 
+    // else {
+    //   // Fetch all vehicles if no specific filters are provided
+    //   vehicles = await Vehicle.find();
+    // }
+
+    // // Filter active vehicles if the request is to fetch multiple vehicles
+    // if (!vehicleId) {
+    //   vehicles = vehicles.filter((vehicle) => vehicle.active);
+    // }
+
+    res.send(vehicles);
   } catch (error) {
-    console.error(error.message);
-    // Log the error directly here
     console.error("Error in GetVehicles:", error.message);
     res.status(500).send("Internal Server Error.");
   }
 };
 
+// check vehicle availability
+const checkVehicleAvailability = async (req, res) => {
+  try {
+    const { vehicleId, startDate, endDate } = req.body;
 
+    // Query to check if the vehicle is already booked between the provided dates
+    const isBooked = await Booking.find({
+      vehicleId: vehicleId,
+      $or: [
+        { startDate: { $lte: endDate, $gte: startDate } },
+        { endDate: { $lte: endDate, $gte: startDate } }
+      ]
+    });
+
+    if (isBooked.length > 0) {
+      return res.status(200).json({ available: false, message: "Vehicle is not available for the selected dates." });
+    } else {
+      return res.status(200).json({ available: true, message: "Vehicle is available for the selected dates." });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error.");
+  }
+};
 
 // vehicle Not Available
 const vehicleNotAvailable = async (req, res) => {
@@ -78,7 +114,7 @@ const vehicleNotAvailable = async (req, res) => {
     if (item) {
       res.json(item);
     } else {
-      res.status(404).send("This vehicle is not present.");
+      res.status(404).send("This vehicle is not available.");
     }
   } catch (error) {
     console.error(error.message);
@@ -86,4 +122,4 @@ const vehicleNotAvailable = async (req, res) => {
   }
 };
 
-module.exports = { uploadVehicle, GetVehicles , vehicleNotAvailable };
+module.exports = { uploadVehicle, GetVehicles , vehicleNotAvailable,  checkVehicleAvailability };
