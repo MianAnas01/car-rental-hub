@@ -60,29 +60,29 @@
 //             <span className="font-semibold"> 6000 {/* {days} */}</span>
 //           </p>
 //         </div>
-//         <p className="mt-6 text-center">
-//           The customer is responsible for any kind of damage to the vehicle
-//           during the rental period. All repair costs will be charged to the
-//           customer. <br />
-//           The vehicle must be returned on the scheduled return date. Failure to
-//           do so will result in additional charges. <br />
-//           Late returns will incur a heavy fine. The fine amount will be
-//           calculated based on the number of days past the scheduled return date.{" "}
-//           <br />
-//           Full payment and real ID card of customer are required at the time of
-//           rental. ID carrd will be returned after safe return of the vehicle.
-//         </p>
-//         <p className="mt-2 text-center">
-//           By pressing the CONFIRM button, you agree to these terms and cannot
-//           deny afterwards!
-//         </p>
-//         <Link to="./Payment">
-//           <div className="flex justify-center px-4 py-2 mt-6 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg">
-//             <button className="text-white">CONFIRM</button>
-//           </div>
-//         </Link>
-//       </div>
-//     </div>
+    //     <p className="mt-6 text-center">
+    //       The customer is responsible for any kind of damage to the vehicle
+    //       during the rental period. All repair costs will be charged to the
+    //       customer. <br />
+    //       The vehicle must be returned on the scheduled return date. Failure to
+    //       do so will result in additional charges. <br />
+    //       Late returns will incur a heavy fine. The fine amount will be
+    //       calculated based on the number of days past the scheduled return date.{" "}
+    //       <br />
+    //       Full payment and real ID card of customer are required at the time of
+    //       rental. ID carrd will be returned after safe return of the vehicle.
+    //     </p>
+    //     <p className="mt-2 text-center">
+    //       By pressing the CONFIRM button, you agree to these terms and cannot
+    //       deny afterwards!
+    //     </p>
+    //     <Link to="./Payment">
+    //       <div className="flex justify-center px-4 py-2 mt-6 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg">
+    //         <button className="text-white">CONFIRM</button>
+    //       </div>
+    //     </Link>
+    //   </div>
+    // </div>
 //   );
 // };
 
@@ -93,6 +93,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { base_url } from "../config/config";
+import { Link } from "react-router-dom";
 
 const Contract = ({ bookingData }) => {
   const [additionalData, setAdditionalData] = useState(null);
@@ -153,6 +154,27 @@ const Contract = ({ bookingData }) => {
           <p>
             Total Amount: <span className="font-semibold">{totalAmount}</span>
           </p>
+          <p className="mt-6 text-center">
+          The customer is responsible for any kind of damage to the vehicle
+          during the rental period. All repair costs will be charged to the
+          customer. <br />
+          The vehicle must be returned on the scheduled return date. Failure to
+          do so will result in additional charges. <br />
+          Late returns will incur a heavy fine. The fine amount will be
+          calculated based on the number of days past the scheduled return date.{" "}
+          <br />
+          Full payment and real ID card of customer are required at the time of
+          rental. ID carrd will be returned after safe return of the vehicle.
+        </p>
+        <p className="mt-2 text-center">
+          By pressing the CONFIRM button, you agree to these terms and cannot
+          deny afterwards!
+        </p>
+        <Link to="./Payment">
+          <div className="flex justify-center px-4 py-2 mt-6 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg">
+            <button className="text-white">CONFIRM</button>
+          </div>
+        </Link>
         </div>
       </div>
     </div>
