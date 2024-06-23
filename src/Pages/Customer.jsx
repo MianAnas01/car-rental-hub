@@ -10,8 +10,9 @@ import car2 from "../assets/car2.png";
 
 const Home = () => {
   const Links = [
-    { to: "/Rentedvehicle", label: "Rentedvehicle" },
     { to: "/Profile", label: "Profile" },
+    // user?.isCustomer && 
+    { to: "/Rentedvehicle", label: "Rentedvehicle" },
   ];
 
   return (

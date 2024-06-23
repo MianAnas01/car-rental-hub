@@ -110,46 +110,56 @@
 
 // export default SignUpForm;
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/auth/auth.provider";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    contactNumber: '',
-    email: '',
-    password: '',
-    role: '', // Assuming you have a role field
+    firstName: "",
+    lastName: "",
+    address: "",
+    contact: "",
+    email: "",
+    password: "",
+    role: "", 
   });
+  const navigation = useNavigate();
+
+const{signup} = useContext(AuthContext) 
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:8000/api/user/sigup', formData);
-      const { data } = response;
-      console.log('Vehicle uploaded:', data);
-      // Handle success or redirect accordingly
-    } catch (error) {
-      console.error('Error uploading vehicle:', error);
-      // Handle error accordingly
-    }
+   await signup(formData); 
+   navigation("/login")  
+
+    console.log(formData, "form data");
   };
+
+useEffect(()=> {
+const token = localStorage.getItem("token")
+console.log(token, "token")
+if(token){
+navigation("/Home")
+}
+}, [])
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-200">
       <div className="bg-gray-300 p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">Create An Account</h2>
-        <p className="mb-6 text-center">Create a free account to start using our services for free!</p>
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          Create An Account
+        </h2>
+        <p className="mb-6 text-center">
+          Create a free account to start using our services for free!
+        </p>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
@@ -182,9 +192,9 @@ const SignUpForm = () => {
           <div className="mb-4">
             <input
               type="text"
-              name="contactNumber"
+              name="contact"
               placeholder="Contact No."
-              value={formData.contactNumber}
+              value={formData.contact}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
@@ -209,19 +219,48 @@ const SignUpForm = () => {
               className="w-full p-2 border border-gray-300 rounded"
             />
           </div>
+
           <button
             type="submit"
+            onClick={() =>
+              handleChange({
+                target: {
+                  name: "role",
+                  value: "customer",
+                },
+              })
+            }
             className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
           >
-            Sign Up
+            SignUp as a customer
+          </button>
+
+          <button
+            type="submit"
+            onClick={() =>
+              handleChange({
+                target: {
+                  name: "role",
+                  value: "rental",
+                },
+              })
+            }
+            className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
+          >
+            SignUp as a rental
           </button>
         </form>
         <div className="text-center mt-4">
-          <p className='text-gray-600'>Already have an account? <Link to="/login" className="text-black">Login</Link></p>
+          <p className="text-gray-600">
+            Already have an account?{" "}
+            <Link to="/login" className="text-black">
+              Login
+            </Link>
+          </p>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default SignUpForm;

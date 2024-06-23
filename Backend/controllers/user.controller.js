@@ -2,13 +2,14 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const { response } = require("express");
 
 // signup
 const userSignup = async (req, res) => {
   try {
     let success = false;
     let user;
-    const { firstName, lastName, address, contactNumber, email, password, role } = req.body;
+    const { firstName, lastName, address, contact, email, password, role } = req.body;
 
     // Check if the email is already in use
     const existingUser = await User.findOne({ email });
@@ -36,7 +37,7 @@ const userSignup = async (req, res) => {
         firstName,
         lastName,
         address,
-        contactNumber,
+        contact,
         email,
         password: hashedPassword,
         isCustomer: role.toLowerCase() === 'customer',
@@ -161,4 +162,18 @@ const editProfile = async (req, res) => {
   }
 };
 
-module.exports = { userSignup, userLogin, editProfile };
+// get profile
+
+const getProfile  = async (req, res) => {
+try {
+  const user = await User.findById(req.user._id);
+if(
+  !user 
+)
+{res.status(404).json({message: "user not found"})}
+res.status(200).json({user}) 
+} catch (error) {
+  res.status(500).json({ message:"An error occurred while getting profile data. Please try again later.", });
+}
+}
+module.exports = { userSignup, userLogin, editProfile, getProfile };

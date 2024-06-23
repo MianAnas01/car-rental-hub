@@ -4,7 +4,7 @@ const {upload} = require("../utils/multer")
 const router = express.Router();
 
 router.post('/rental/uploadvehicle',  upload.single('images'), uploadVehicle);
-router.get('/rental/getvehicle/:id' , GetVehicles)
+router.post('/rental/getvehicle' , GetVehicles)
 router.put("/vehiclenotavailable", vehicleNotAvailable)
 router.get('/vehicle/checkavailability/:id', checkVehicleAvailability);
 

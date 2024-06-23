@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import car2 from "../assets/car2.png";
 import axios from "axios";
+import { AuthContext } from "../context/auth/auth.provider";
+import { base_url } from "../config/config";
+import { LoadingContext } from "../context/loading/loading.provider";
 
 const Uploadvehicle = () => {
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState();
   const [formData, setFormData] = useState({
     brand: "",
     model: "",
@@ -14,21 +19,23 @@ const Uploadvehicle = () => {
     rent: "",
     location: "",
     licensePlate: "",
-    image: null
+    image: null,
   });
+
+  const { user } = useContext(AuthContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleImageChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      image: e.target.files[0]
+      image: e.target.files[0],
     }));
   };
 
@@ -42,13 +49,50 @@ const Uploadvehicle = () => {
     formDataToSend.append("address", formData.location);
     formDataToSend.append("licensePlate", formData.licensePlate);
     formDataToSend.append("images", formData.image);
-    formDataToSend.append("rentalId", "6671cd0db6ccb356edc2b8cb");
-    const {data}  = await axios.post("http://localhost:8000/api/vehicle/rental/uploadvihicle", formDataToSend)
+    formDataToSend.append("rentalId", user?._id);
+    const { data } = await axios.post(
+      `${base_url}/vehicle/rental/uploadvehicle`,
+      formDataToSend
+    );
     console.log(data);
-  }
- 
-    return (
-       <div>
+  };
+
+  useEffect(() => {
+    console.log(user, "user");
+    const fetchVehicles = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.post(
+          `${base_url}/vehicle/rental/getvehicle`,
+          { rentalId: user?._id }
+        );
+
+        setVehicles(response.data?.vehicles);
+      } catch (error) {
+        console.error("Error fetching vehicles:", error.message);
+        // Handle the error, e.g., display an error message to the user
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (user) {
+      fetchVehicles();
+    }
+  }, [user]);
+
+  const confirmBooking = async (bookingId) => {
+    try {
+      const response = await axios.put(`/api/confirmation/${bookingId}`);
+      console.log("Booking confirmed:", response.data);
+      // Do something after confirming booking
+    } catch (error) {
+      console.error("Error confirming booking:", error.message);
+      // Handle error
+    }
+  };
+
+  return (
+    <div>
       <Header />
 
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
@@ -128,7 +172,7 @@ const Uploadvehicle = () => {
                 />
               </div>
               {/* <div className="mb-4"> */}
-               
+
               {/* </div> */}
               <button
                 type="button"
@@ -139,21 +183,20 @@ const Uploadvehicle = () => {
               </button>
             </form>
           </div>
-          <div className="flex-1 flex justify-center"> 
-          <div 
-  className="bg-red-500 rounded-full w-32 h-32 flex items-center justify-center relative cursor-pointer"
-  onClick={() => document.getElementById('fileInput').click()}
->
-  <input
-    id="fileInput"
-    type="file"
-    name="image"
-    onChange={handleImageChange}
-    className="hidden"
-  />
-  <p className="text-white mt-2">Add Image</p>
-</div>
-
+          <div className="flex-1 flex justify-center">
+            <div
+              className="bg-red-500 rounded-full w-32 h-32 flex items-center justify-center relative cursor-pointer"
+              onClick={() => document.getElementById("fileInput").click()}
+            >
+              <input
+                id="fileInput"
+                type="file"
+                name="image"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <p className="text-white mt-2">Add Image</p>
+            </div>
           </div>
         </div>
       </div>
@@ -162,49 +205,106 @@ const Uploadvehicle = () => {
         <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
           <h2 className="text-2xl font-bold mb-4">YOUR VEHICLES</h2>
           <p className="mb-6">Your vehicles that you uploaded on site.</p>
-          <div className="flex items-center bg-red-500 text-white p-4 rounded-lg">
-            <img src={car2} alt="Car" className="w-32 h-auto rounded-lg mr-4" />
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">Audi Q3</h3>
-              <p>4 seaters • AC • Automatic</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xl font-bold">Rs. 3,000</p>
-              <p>per day</p>
-              <span className="bg-white text-red-500 px-2 py-1 rounded-full mt-2 inline-block">
-                ACTIVE
-              </span>
-            </div>
-          </div>
+
+          {!loading ? (
+            vehicles?.length > 0 &&
+            vehicles.map((item) => (
+              <div
+                key={item._id}
+                className="flex items-center bg-red-500 text-white p-4 rounded-lg"
+              >
+                <img
+                  src={item.avatar}
+                  alt="Car"
+                  className="w-32 h-auto rounded-lg mr-4"
+                />
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{item.carBrand}</h3>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{item.carModel}</h3>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{item.noOfSeats}</h3>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{item.transmission}</h3>
+                </div>
+
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{item.address}</h3>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{item.licensePlate}</h3>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold">{item.status}</h3>
+                </div>
+                <div className="text-right">
+                  <p className="text-xl font-bold">{item.rentPerDay}</p>
+                  <p>per day</p>
+                  <span className="bg-white text-red-500 px-2 py-1 rounded-full mt-2 inline-block">
+                    {item.status}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div>loading...</div>
+          )}
         </div>
       </div>
-
+{/* 
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
         <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
           <h2 className="text-2xl font-bold mb-4">BOOKING REQUESTS</h2>
           <div className="flex items-center bg-blue-500 text-white p-4 rounded-lg">
-            <img src={car2} alt="Car" className="w-32 h-auto rounded-lg mr-4" />
+            <img
+              src={item.avatar}
+              alt="Car"
+              className="w-32 h-auto rounded-lg mr-4"
+            />{" "}
             <div className="flex-1">
-              <h3 className="text-xl font-bold">Audi Q3</h3>
-              <p>4 seaters • AC • Automatic</p>
+              <h3 className="text-xl font-bold">{booking.carBrand}</h3>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold">{booking.carModel}</h3>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold">{booking.noOfSeats}</h3>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold">{booking.transmission}</h3>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold">{booking.address}</h3>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold">{booking.licensePlate}</h3>
             </div>
             <div className="text-right">
-              <p className="text-xl font-bold">Rs. 3,000</p>
+              <p className="text-xl font-bold"> {booking.price}</p>
               <p>per day</p>
-              <span className="bg-red-500 px-2 py-1 rounded-full mt-2 inline-block mr-2">
+              <button
+                className="bg-red-500 px-2 py-1 rounded-full mt-2 inline-block mr-2"
+                onClick={() => confirmBooking(booking._id)}
+              >
                 Decline
-              </span>
-              <span className="bg-green-500 px-2 py-1 rounded-full mt-2 inline-block">
+              </button>
+              <button
+                className="bg-green-500 px-2 py-1 rounded-full mt-2 inline-block"
+                onClick={() => confirmBooking(booking._id)}
+              >
                 Accept
-              </span>
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Footer />
     </div>
   );
+  // };
 };
-
 export default Uploadvehicle;

@@ -42,7 +42,7 @@
 //           // onClick={handleCustomerLogin}
 //           className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
 //         >
-//           Login 
+//           Login
 //         </button>
 //         </Link>
 //         <div className="text-center text-gray-600" >
@@ -57,35 +57,59 @@
 
 // export default Login;
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/auth/auth.provider";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
+  const { login } = useContext(AuthContext);
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log(token, "TOKEN VALUE");
+    if (token) {
+      navigation("/Home");
+    }
+  }, []);
 
   const handleLogin = async () => {
-    try {
-      const response = await axios.post('/api/user/login', { email, password });
-      // Assuming response.data contains the token and user information
-      console.log('Login Successful:', response.data);
-      // Redirect or do something else on successful login
-    } catch (error) {
-      console.error('Login Failed:', error.response.data);
-      setError(error.response.data.message);
-    }
+    const data = {
+      email: email,
+      password: password,
+    };
+
+    const onSuccess = (data) => {
+      if(data?.isRental) {
+        navigation("/Rental");
+        return ;
+      } 
+      else if (data?.isCustomer ) {
+        navigation("/Customer");
+      }
+    };
+
+    const onFailure = (err) => {
+      setError(err?.response?.data?.message || "an error occured");
+    };
+
+    await login(data, onSuccess, onFailure);
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
       <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        <p className="mb-6 text-center">Please enter your details below to continue</p>
+        <p className="mb-6 text-center">
+          Please enter your details below to continue
+        </p>
         <input
           type="email"
           placeholder="Enter Email Address"

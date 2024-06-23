@@ -15,8 +15,8 @@ const newBooking = async (req, res) => {
       // Update the vehicle status to 'Not Available'
       await Vehicle.findByIdAndUpdate(vehicleId, { $set: { status: 'Not Available' } }, { new: true });
   
-      // Return the new Booking details
-      res.json(newBooking);
+      // Return the new Booking details with booking ID
+      res.json({ bookingId: newBooking._id, ...newBookingDoc.toObject() });
     } catch (error) {
         console.error("Error adding new booking:", error.message);
         res.status(500).send("Internal Server Error.");
@@ -40,7 +40,7 @@ const newBooking = async (req, res) => {
   
         res.send(item);
       } else {
-        res.send("This Booking is not present.");
+        res.send("confirmation not done");
       }
     } catch (error) {
         console.error("Error during confirming bookig", error);

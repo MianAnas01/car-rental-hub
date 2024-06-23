@@ -10,8 +10,11 @@ import steeringWheel from "../assets/steeringwheel.png";
 const Profile = () => {
   const Links = [
     { to: "/Showroom", label: "Showroom" },
-    { to: "/Login", label: "Login" },
-    { to: "/Signup", label: "Signup" },
+    // user?.isRental &&
+    { to: "/uploadVehicle", label: "Upload Vehicle" },
+      // user?.isCustomer &&
+    { to: "/rentedVehicle", label: "Rented Vehicle" },
+
   ];
 
   return (

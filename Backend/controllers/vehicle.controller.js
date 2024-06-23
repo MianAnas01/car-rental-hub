@@ -1,5 +1,6 @@
+const { log } = require("console");
 const { Vehicle } = require("../models/vehicle.model");
-const path = require("path")
+const path = require("path");
 
 // upload Vehicle
 const uploadVehicle = async (req, res) => {
@@ -17,7 +18,7 @@ const uploadVehicle = async (req, res) => {
     if (!req.file) {
       return res.status(400).send("Bad Request: Image file is required.");
     }
-    req.file.path = path.join('uploads', req.file.filename); // Store the file path
+    req.file.path = path.join("uploads", req.file.filename); // Store the file path
 
     console.log(req.body, req.file);
     const imageUrl = `${process.env.BACKEND_URL}/${req.file.path}`; // Path to the uploaded image
@@ -29,7 +30,7 @@ const uploadVehicle = async (req, res) => {
       // Set the property dynamically based on the value of manual/auto
       rentPerDay: req.body.rentPerDay,
       carlocation: req.body.carLocation,
-      plateNumber: req.body.plateNumber,
+      licensePlate: req.body.licensePlate,
       avatar: imageUrl,
       address: req.body.address,
       rentalId: req.body.rentalId,
@@ -46,8 +47,8 @@ const uploadVehicle = async (req, res) => {
 const GetVehicles = async (req, res) => {
   try {
     let vehicles;
-    const vehicleId = req.params.id;
-
+    const vehicleId = req.body.vehicleId;
+console.log();
     if (vehicleId) {
       // If a vehicle ID is provided in the URL, fetch the specific vehicle
       vehicles = await Vehicle.findById(vehicleId);
@@ -57,18 +58,12 @@ const GetVehicles = async (req, res) => {
     } else if (req.body.rentalId) {
       // If rentalId is provided in the request body, filter vehicles by rentalId
       vehicles = await Vehicle.find({ rentalId: req.body.rentalId });
-    } 
-    // else {
-    //   // Fetch all vehicles if no specific filters are provided
-    //   vehicles = await Vehicle.find();
-    // }
+      console.log(vehicles, "vehicle data")
+    } else if (req.body.customerId) {
+      vehicles = await Vehicle.find({ customerId: req.body.customerId });
+    }
 
-    // // Filter active vehicles if the request is to fetch multiple vehicles
-    // if (!vehicleId) {
-    //   vehicles = vehicles.filter((vehicle) => vehicle.active);
-    // }
-
-    res.send(vehicles);
+    res.status(200).json({ vehicles });
   } catch (error) {
     console.error("Error in GetVehicles:", error.message);
     res.status(500).send("Internal Server Error.");
@@ -85,14 +80,24 @@ const checkVehicleAvailability = async (req, res) => {
       vehicleId: vehicleId,
       $or: [
         { startDate: { $lte: endDate, $gte: startDate } },
-        { endDate: { $lte: endDate, $gte: startDate } }
-      ]
+        { endDate: { $lte: endDate, $gte: startDate } },
+      ],
     });
 
     if (isBooked.length > 0) {
-      return res.status(200).json({ available: false, message: "Vehicle is not available for the selected dates." });
+      return res
+        .status(200)
+        .json({
+          available: false,
+          message: "Vehicle is not available for the selected dates.",
+        });
     } else {
-      return res.status(200).json({ available: true, message: "Vehicle is available for the selected dates." });
+      return res
+        .status(200)
+        .json({
+          available: true,
+          message: "Vehicle is available for the selected dates.",
+        });
     }
   } catch (error) {
     console.error(error.message);
@@ -122,4 +127,9 @@ const vehicleNotAvailable = async (req, res) => {
   }
 };
 
-module.exports = { uploadVehicle, GetVehicles , vehicleNotAvailable,  checkVehicleAvailability };
+module.exports = {
+  uploadVehicle,
+  GetVehicles,
+  vehicleNotAvailable,
+  checkVehicleAvailability,
+};

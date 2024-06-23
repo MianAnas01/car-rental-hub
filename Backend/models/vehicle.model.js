@@ -27,10 +27,18 @@ const vehicleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    licensePlate: {
+      type: String,
+      required: true,
+    },
     avatar: {
       type: String,
       required: true,
     },
+    // staus: {
+    //   type: String,
+    //   required: true,
+    // },
     rentalId: {
       type: String,
       required: true,

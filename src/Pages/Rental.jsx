@@ -9,8 +9,9 @@ import car2 from "../assets/car2.png";
 
 const Rental = () => {
   const Links = [
-    { to: "/Uploadvehicle", label: "Uploadvehicle" },
     { to: "/Profile", label: "Profile" },
+    user?.isRental &&
+    { to: "/Uploadvehicle", label: "Uploadvehicle" },
   ];
 
   return (
