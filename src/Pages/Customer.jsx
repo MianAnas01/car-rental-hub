@@ -1,19 +1,56 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Showroom from "./Showroom";
 import Rentedvehicle from "./Rentedvehicle";
 import Profile from "./Profile";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BookNow from "./BookNow";
 import car2 from "../assets/car2.png";
+import { AuthContext } from "../context/auth/auth.provider";
+import axios from "axios";
+import { base_url } from "../config/config";
 
 const Home = () => {
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { user } = useContext(AuthContext);
+  const navigation = useNavigate();
   const Links = [
     { to: "/Profile", label: "Profile" },
-    // user?.isCustomer && 
+    // user?.isCustomer &&
     { to: "/Rentedvehicle", label: "Rentedvehicle" },
   ];
+
+  useEffect(() => {
+    console.log(user, "user");
+    const fetchVehicles = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.post(
+          `${base_url}/vehicle/rental/getvehicle`,
+          { all: "all" }
+        );
+
+        setVehicles(response.data?.vehicles);
+      } catch (error) {
+        console.error("Error fetching vehicles:", error.message);
+        // Handle the error, e.g., display an error message to the user
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (user) {
+      fetchVehicles();
+    }
+  }, [user]);
+  const handleBookNow = (item) => {
+    const queryParams = new URLSearchParams();
+    queryParams.set('carId', item._id);
+   
+    navigation(`/BookNow?${queryParams.toString()}`);
+};
+
 
   return (
     <div>
@@ -135,68 +172,58 @@ const Home = () => {
 
         <div className="flex items-center justify-center min-h-screen p-4">
           <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full ">
-            <div className="flex items-center bg-red-500 text-white p-3 mb-4 rounded-lg">
-              <img
-                src={car2}
-                alt="Car"
-                className="w-32 h-auto rounded-lg mr-4"
-              />
-              <div className="flex-1">
-                <h3 className="text-xl font-bold">Audi Q3</h3>
-                <p>4 seaters • AC • Automatic</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xl font-bold">Rs. 3,000</p>
-                <p>per day</p>
-                <Link to="/BookNow">
-                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white hover:bg-red-600 rounded-lg">
-                    Book Now
-                  </button>
-                </Link>
-              </div>
-            </div>
+            {!loading ? (
+              vehicles?.length > 0 &&
+              vehicles.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex items-center bg-red-500 text-white p-4 rounded-lg"
+                >
+                  <img
+                    src={item.avatar}
+                    alt="Car"
+                    className="w-32 h-auto rounded-lg mr-4"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold">{item.carBrand}</h3>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold">{item.carModel}</h3>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold">{item.noOfSeats}</h3>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold">{item.transmission}</h3>
+                  </div>
 
-            <div className="flex items-center bg-red-500 text-white  p-3 mb-4 rounded-lg">
-              <img
-                src={car2}
-                alt="Car"
-                className="w-32 h-auto rounded-lg mr-4"
-              />
-              <div className="flex-1">
-                <h3 className="text-xl font-bold">Audi Q3</h3>
-                <p>4 seaters • AC • Automatic</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xl font-bold">Rs. 3,000</p>
-                <p>per day</p>
-                <Link to="/BookNow">
-                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-red-600">
-                    Book Now
-                  </button>
-                </Link>{" "}
-              </div>
-            </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold">{item.address}</h3>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold">{item.licensePlate}</h3>
+                  </div>
 
-            <div className="flex items-center bg-red-500 text-white  p-3 mb-4 rounded-lg">
-              <img
-                src={car2}
-                alt="Car"
-                className="w-32 h-auto rounded-lg mr-4"
-              />
-              <div className="flex-1">
-                <h3 className="text-xl font-bold">Audi Q3</h3>
-                <p>4 seaters • AC • Automatic</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xl font-bold">Rs. 3,000</p>
-                <p>per day</p>
-                <Link to="/BookNow">
-                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-red-600">
-                    Book Now
-                  </button>
-                </Link>{" "}
-              </div>
-            </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold">{item.status}</h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold">{item.rentPerDay}</p>
+                    <p>per day</p>
+                    <span className="bg-white text-red-500 px-2 py-1 rounded-full mt-2 inline-block">
+                      {item.status}
+                    </span>
+                    <div onClick={() => handleBookNow(item)} className="flex-1">
+                      <h3 className="mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                        Book Now
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div>loading...</div>
+            )}
           </div>
         </div>
       </div>

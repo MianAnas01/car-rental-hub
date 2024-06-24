@@ -133,13 +133,21 @@
 
 // export default BookNow;
 
-
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { base_url } from "../config/config";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import { AuthContext } from "../context/auth/auth.provider";
 
 const BookNow = () => {
+  const location = useLocation();
+  const navigation = useNavigate();
+  const { user } = useContext(AuthContext);
+  const [error, setError] = useState("");
+  const searchParams = new URLSearchParams(location.search);
+ 
+  const carId = searchParams.get("carId");
+ 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -147,9 +155,10 @@ const BookNow = () => {
     contactNo: "",
     email: "",
     cnic: "",
-    customerId: "",
+    customerId: user._id,
     startDate: "",
     endDate: "",
+    vehicleId: carId,
   });
 
   const handleChange = (e) => {
@@ -162,9 +171,20 @@ const BookNow = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${base_url}/book`, formData);
+      const res = await axios.post(
+        `${base_url}/booking/customer/bookNow`,
+        formData
+      );
       console.log(res.data);
+
+      // Construct the query string from the received parameters
+      const queryParams = new URLSearchParams();
+      queryParams.set("bookingId", res.data.newBooking._id);
+
+      // Navigate to the new URL with the qu ery parameters
+      navigation(`/contract?${queryParams.toString()}`);
     } catch (error) {
+      setError(error?.response?.data?.message);
       console.error("Error adding new booking:", error.message);
     }
   };
@@ -173,7 +193,9 @@ const BookNow = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200">
       <div className="bg-gray-300 p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4 text-center">Book Now</h1>
-        <p className="text-center mb-6">Enter your details to continue booking</p>
+        <p className="text-center mb-6">
+          Enter your details to continue booking
+        </p>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
@@ -262,6 +284,7 @@ const BookNow = () => {
             Next
           </button>
         </form>
+        <div>{error && <span> {error} </span>}</div>
       </div>
     </div>
   );

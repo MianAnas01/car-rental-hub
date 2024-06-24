@@ -35,6 +35,7 @@ const uploadVehicle = async (req, res) => {
       address: req.body.address,
       rentalId: req.body.rentalId,
       transmission: req.body.transmission,
+      status: "active",
     });
 
     res.json(NewVehicle);
@@ -48,7 +49,6 @@ const GetVehicles = async (req, res) => {
   try {
     let vehicles;
     const vehicleId = req.body.vehicleId;
-console.log();
     if (vehicleId) {
       // If a vehicle ID is provided in the URL, fetch the specific vehicle
       vehicles = await Vehicle.findById(vehicleId);
@@ -61,7 +61,10 @@ console.log();
       console.log(vehicles, "vehicle data")
     } else if (req.body.customerId) {
       vehicles = await Vehicle.find({ customerId: req.body.customerId });
-    }
+    } else if (req.body.all) {
+      vehicles = await Vehicle.find();
+
+    } 
 
     res.status(200).json({ vehicles });
   } catch (error) {

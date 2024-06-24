@@ -1,4 +1,4 @@
-const mongoose = require( "mongoose");
+const mongoose = require("mongoose");
 
 const bookingSchema = new mongoose.Schema(
   {
@@ -13,7 +13,6 @@ const bookingSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
     },
     contact: {
       type: Number,
@@ -24,38 +23,45 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
     cnic: {
-      type: Number,
+      type: String,
       required: true,
     },
     from: {
-        type: Date,
-        required: true,
-      },
-      to: {
-        type: Date,
-        required: true,
-      },
-      vehicleId: {
-        type: mongoose.Types.schema.objectId,
-        ref: "Vehicle",
-        required: true,
-      },
-      customerId: {
-        type: mongoose.Types.Schema.objectId,
-        ref: "User",
-        required: true,
-      },
-    status:{
       type: String,
-      enum: ["decline", "accept", "request"],
+      required: true,
+    },
+    to: {
+      type: String,
+      required: true,
+    },
+    vehicleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vehicle",
+      required: true,
+    },
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    // rentalId: {
+    //   type: mongoose.Types.Schema.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
+    status: {
+      type: String,
+      enum: ["decline", "accept", "request", "paid"],
       default: "request",
-
+    },
+    totalRent: {
+      type: Number,
+      required: true,
     }
-
   },
   { timestamps: true }
 );
 
 const Booking = mongoose.model("Booking", bookingSchema);
 
-export default Booking;
+module.exports = Booking;

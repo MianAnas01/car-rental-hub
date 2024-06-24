@@ -96,6 +96,7 @@ function App() {
         <Route path="/Uploadvehicle" element={<Uploadvehicle />} />
 
         <Route path="/BookNow" element={<BookNow />} />
+       
         <Route path="/Payment" element={<Payment />} />
         <Route path="/Termsandconditions" element={<Termsandconditions />} />
         <Route path="/Contract" element={<Contract />} />

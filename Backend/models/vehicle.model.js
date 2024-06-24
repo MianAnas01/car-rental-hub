@@ -35,10 +35,12 @@ const vehicleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // staus: {
-    //   type: String,
-    //   required: true,
-    // },
+    status: {
+      type: String, 
+      enum:["active", "inactive"],
+      dafault: "active",
+      required: true,
+    },
     rentalId: {
       type: String,
       required: true,
