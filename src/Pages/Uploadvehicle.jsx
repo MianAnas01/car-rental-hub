@@ -8,6 +8,7 @@ import { AuthContext } from "../context/auth/auth.provider";
 import { base_url } from "../config/config";
 import { LoadingContext } from "../context/loading/loading.provider";
 
+// upload Vehicle
 const Uploadvehicle = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState();
@@ -57,8 +58,8 @@ const Uploadvehicle = () => {
     console.log(data);
   };
 
+  // get vehicle
   useEffect(() => {
-    console.log(user, "user");
     const fetchVehicles = async () => {
       try {
         setLoading(true);
@@ -80,17 +81,70 @@ const Uploadvehicle = () => {
     }
   }, [user]);
 
-  const confirmBooking = async (bookingId) => {
+  // booking requests
+  const [bookingRequests, setBookingRequests] = useState([]);
+  const [error, setError] = useState(null);
+
+  // Function to fetch booking requests
+  const fetchBookingRequests = async () => {
     try {
-      const response = await axios.put(`/api/confirmation/${bookingId}`);
-      console.log("Booking confirmed:", response.data);
-      // Do something after confirming booking
+      const { data } = await axios.post(`${base_url}/booking/bookings`, {
+        rentalId: user?._id,
+      });
+      const { declineVehicles, pendingVehicles, rentedVehicles } = data;
+      setBookingRequests(pendingVehicles);
     } catch (error) {
-      console.error("Error confirming booking:", error.message);
-      // Handle error
+      setError("Failed to fetch booking requests");
     }
   };
 
+  useEffect(() => {
+    fetchBookingRequests();
+  }, [user]);
+
+  const determineStatus = (rentalResponse) => {
+    if (rentalResponse === "approved") {
+      return "Approved";
+    } else if (rentalResponse === "declined") {
+      return "Declined";
+    } else {
+      return "Pending";
+    }
+  };
+
+  const handleAccept = async (bookingId) => {
+    try {
+      const response = await axios.put(
+        `${base_url}/booking/updateStatus/${bookingId}/accept`
+      );
+      if (response.status === 200) {
+        const updatedBookingRequests = bookingRequests.filter((booking) =>
+          booking._id !== bookingId
+        );
+        setBookingRequests(updatedBookingRequests);
+        console.log(bookingRequests, "booking requests")
+      }
+    } catch (error) {
+      setError("Failed to accept booking request");
+    }
+  };
+
+  const handleDecline = async (bookingId) => {
+    try {
+      const response = await axios.put(
+        `${base_url}/booking/updateStatus/${bookingId}/decline`
+      );
+      if (response.status === 200) {
+        const updatedBookingRequests = bookingRequests.filter((booking) =>
+          booking._id !== bookingId
+         
+        );
+        setBookingRequests(updatedBookingRequests);
+      }
+    } catch (error) {
+      setError("Failed to decline booking request");
+    }
+  };
   return (
     <div>
       <Header />
@@ -254,12 +308,14 @@ const Uploadvehicle = () => {
           )}
         </div>
       </div>
-{/* 
+
+      {/* booking requests */}
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
         <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
           <h2 className="text-2xl font-bold mb-4">BOOKING REQUESTS</h2>
-          <div className="flex items-center bg-blue-500 text-white p-4 rounded-lg">
-            <img
+          {/* <div className="flex items-center bg-blue-500 text-white p-4 rounded-lg">
+            
+         <img
               src={item.avatar}
               alt="Car"
               className="w-32 h-auto rounded-lg mr-4"
@@ -284,27 +340,37 @@ const Uploadvehicle = () => {
             </div>
             <div className="text-right">
               <p className="text-xl font-bold"> {booking.price}</p>
-              <p>per day</p>
-              <button
-                className="bg-red-500 px-2 py-1 rounded-full mt-2 inline-block mr-2"
-                onClick={() => confirmBooking(booking._id)}
-              >
-                Decline
-              </button>
-              <button
-                className="bg-green-500 px-2 py-1 rounded-full mt-2 inline-block"
-                onClick={() => confirmBooking(booking._id)}
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        </div>
-      </div> */}
+              <p>per day</p> 
 
+              
+            </div>
+          </div> */}
+
+          {bookingRequests?.length > 0 &&
+            bookingRequests.map((booking) => (
+              <div className="flex items-center bg-blue-500 text-white p-4 rounded-lg">
+                <div key={booking._id}>
+                  <button
+                    className="bg-red-500 px-2 py-1 rounded-full mt-2 inline-block mr-2"
+                    onClick={() => handleDecline(booking._id)}
+                    // disabled={booking.status !== "Pending"}
+                  >
+                    Decline
+                  </button>
+                  <button
+                    className="bg-green-500 px-2 py-1 rounded-full mt-2 inline-block"
+                    onClick={() => handleAccept(booking._id)}
+                    // disabled={booking.status !== "Pending"}
+                  >
+                    Accept
+                  </button>
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
       <Footer />
     </div>
   );
-  // };
 };
 export default Uploadvehicle;

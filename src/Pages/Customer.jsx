@@ -23,7 +23,6 @@ const Home = () => {
   ];
 
   useEffect(() => {
-    console.log(user, "user");
     const fetchVehicles = async () => {
       try {
         setLoading(true);

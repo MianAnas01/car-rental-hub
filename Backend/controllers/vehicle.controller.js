@@ -58,7 +58,7 @@ const GetVehicles = async (req, res) => {
     } else if (req.body.rentalId) {
       // If rentalId is provided in the request body, filter vehicles by rentalId
       vehicles = await Vehicle.find({ rentalId: req.body.rentalId });
-      console.log(vehicles, "vehicle data")
+      
     } else if (req.body.customerId) {
       vehicles = await Vehicle.find({ customerId: req.body.customerId });
     } else if (req.body.all) {

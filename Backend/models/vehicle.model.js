@@ -37,7 +37,7 @@ const vehicleSchema = new mongoose.Schema(
     },
     status: {
       type: String, 
-      enum:["active", "inactive"],
+      enum:["Active", "In Active"],
       dafault: "active",
       required: true,
     },

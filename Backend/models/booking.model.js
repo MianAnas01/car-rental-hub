@@ -44,11 +44,11 @@ const bookingSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // rentalId: {
-    //   type: mongoose.Types.Schema.ObjectId,
-    //   ref: "User",
-    //   required: true,
-    // },
+    rentalId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     status: {
       type: String,
       enum: ["decline", "accept", "request", "paid"],

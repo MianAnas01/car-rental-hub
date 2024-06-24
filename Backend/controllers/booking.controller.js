@@ -47,6 +47,7 @@ const newBooking = async (req, res) => {
       to: endDate,
       vehicleId,
       totalRent: totalAmount,
+      rentalId: vehicle?.rentalId,
     });
 
     // Update the vehicle status to 'Not Available'
@@ -134,22 +135,83 @@ const getContractData = async (req, res) => {
 
 // {* get booking for rental and customer *}
 
-// take customer id in req.body.customerId 
-// const bookings = await Booking.find({customerId: customerId}).populate("vehicleId");
+const getBookingData = async (req, res) => {
+  try {
+    const { customerId, rentalId } = req.body;
+    console.log(customerId, rentalId, "customer,rntal data");
+    let rentedVehicles = [];
+    let pendingVehicles = [];
+    let declineVehicles = [];
 
-// const rentedVehicles = bookings.filter((item) => item.status!="paid")
+    if (customerId) {
+      const bookings = await Booking.find({ customerId }).populate("vehicleId");
 
-// const pendingVehicle = bookings.filter((item) => item.status!="accept" || item.status!="pending" )
+      rentedVehicles = bookings.filter((item) => item.status === "paid");
+      pendingVehicles = bookings.filter(
+        (item) => item.status === "accept" || item.status === "pending"
+      );
+      declineVehicles = bookings.filter((item) => item.status === "decline");
+    } else if (rentalId) {
+      const bookings = await Booking.find({ rentalId }).populate("vehicleId");
 
-// if req.body.customerId 
+      rentedVehicles = bookings.filter((item) => item.status === "paid");
+      pendingVehicles = bookings.filter(
+        (item) => item.status === "request" || item.status === "pending"
+      );
+    }
 
-// response.pendingVehicle acceptVehicle 
+    res.status(200).json({ rentedVehicles, pendingVehicles, declineVehicles });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.log(error, "error in booking data");
+  }
+};
 
-// call these apis in frontend and map arrays of pending and accept vehicle
+const updateStatus = async (req, res) => {
+  const { bookingId, status } = req.params;
+  try {
+    if (status === "accept") {
+      const item = await Booking.findByIdAndUpdate(
+        bookingId,
+        { $set: { status: status } }, // Update the status field
+        { new: true }
+      );
+      res
+        .status(200)
+        .json({ message: "booking updated successfully", booking: item });
+    } else if (status === "decline") {
+      const item = await Booking.findByIdAndUpdate(
+        bookingId,
+        { $set: { status: status } }, // Update the status field
+        { new: true }
+      ).populate("vehicleId");
+
+      // Corrected the typo in 'vehicle' variable name
+      const vehicle = await Vehicle.findByIdAndUpdate(
+        item.vehicleId._id,
+        { $set: { status: "active" } }, // Update the status field
+        { new: true }
+      );
+
+      res
+        .status(200)
+        .json({ message: "booking updated successfully", booking: item });
+    } else {
+      res
+      .status(404)
+      .json({ message: "invalid status"});
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.log(error, "error in updating booking data");
+  }
+};
 
 module.exports = {
   newBooking,
   confirmBooking,
   confirmedBooking,
   getContractData,
+  getBookingData,
+  updateStatus,
 };
