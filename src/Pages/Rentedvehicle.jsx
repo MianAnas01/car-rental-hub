@@ -7,11 +7,10 @@ import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { base_url } from "../config/config";
-import { AuthContext } from "../context/auth/auth.provider";
+import { AuthContext, useAuth } from "../context/auth/auth.provider";
 
 const Rentedvehicle = () => {
   const Links = [
-    { to: "/Showroom", label: "Showroom" },
     { to: "/Profile", label: "Profile" },
   ];
 
@@ -21,7 +20,7 @@ const Rentedvehicle = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
       console.log(user, "data");

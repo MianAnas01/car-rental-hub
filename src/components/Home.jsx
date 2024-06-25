@@ -6,13 +6,17 @@ import Signup from "../Pages/Signup";
 import Footer from "./Footer";
 import car from "../assets/car.png";
 import steeringWheel from "../assets/steeringwheel.png";
+import { useContext } from "react";
+import { useAuth } from "../context/auth/auth.provider";
 
 const Profile = () => {
+const {user} = useAuth();
+
   const Links = [
     { to: "/Showroom", label: "Showroom" },
-    // user?.isRental &&
+    user?.isRental &&
     { to: "/uploadVehicle", label: "Upload Vehicle" },
-      // user?.isCustomer &&
+      user?.isCustomer &&
     { to: "/rentedVehicle", label: "Rented Vehicle" },
 
   ];

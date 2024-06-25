@@ -148,7 +148,7 @@ const getBookingData = async (req, res) => {
 
       rentedVehicles = bookings.filter((item) => item.status === "paid");
       pendingVehicles = bookings.filter(
-        (item) => item.status === "accept" || item.status === "pending"
+        (item) => item.status === "accept" || item.status === "request"
       );
       declineVehicles = bookings.filter((item) => item.status === "decline");
     } else if (rentalId) {

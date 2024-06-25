@@ -7,18 +7,18 @@ import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import BookNow from "./BookNow";
 import car2 from "../assets/car2.png";
-import { AuthContext } from "../context/auth/auth.provider";
+import { AuthContext, useAuth } from "../context/auth/auth.provider";
 import axios from "axios";
 import { base_url } from "../config/config";
 
 const Customer = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const navigation = useNavigate();
   const Links = [
     { to: "/Profile", label: "Profile" },
-    // user?.isCustomer &&
+    user?.isCustomer &&
     { to: "/Rentedvehicle", label: "Rentedvehicle" },
   ];
 

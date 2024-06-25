@@ -44,15 +44,15 @@ const Header = ({ links = [] }) => {
               </Link>
             </>
           )}
-          {/* {links.length>0 && links.map((link, index) => (
+          {links.length>0 && links.map((link, index) => (
             <Link
               key={index}
-              to={link.to}
+              to={link?.to}
               className="text-black px-3 py-2 font-bold text-xl leading-tight tracking-wide rounded-lg opacity-70"
             >
-              <h1>{link.label}</h1>
+              <h1>{link?.label}</h1>
             </Link>
-          ))} */}
+          ))}
         </div>
       </nav>
     </header>
