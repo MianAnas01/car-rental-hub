@@ -112,7 +112,7 @@ const Rentedvehicle = () => {
                           PAYMENT
                         </span>
                       ) : (
-                        <Link to="/payment">
+                        <Link to={`/payment/${vehicle._id}/${vehicle.totalRent}`}>
                           <span className="bg-green-500 px-2 py-1 rounded-full mt-2 inline-block">
                             PAYMENT
                           </span>

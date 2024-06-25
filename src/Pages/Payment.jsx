@@ -1,102 +1,91 @@
-import React from "react";
-import Header from "../components/Header";
-import Showroom from "./Showroom";
-import Rentedvehicle from "./Rentedvehicle";
-import Profile from "./Profile";
-import Footer from "../components/Footer";
-import jazzcash from "../assets/jazzcash.png";
-import easypaisa from "../assets/easypaisa.png";
-import car from "../assets/car.png";
-import { Link } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import {
+  CardElement,
+  useStripe,
+  useElements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+} from "@stripe/react-stripe-js";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { base_url } from "../config/config";
 
 const Payment = () => {
-  //  const [formData, setFormData] = useState({
-  //     cardNumber: '',
-  //     expiry: '',
-  //     cvv: '',
-  //     postal: '',
-  //   });
+  const params = useParams();
+  const { bookingId, amount } = params;
+  const navigate = useNavigate();
+  const payBtn = useRef(null);
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    payBtn.current.disabled = true;
+    setError(null);
 
-  const handleSubmit = () => {
-    // Handle the form submission logic here
-    console.log("Payment data:", formData);
+    try {
+      if (!stripe || !elements) return;
+
+      const cardElement = elements.getElement(CardNumberElement);
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+      });
+
+      if (error) {
+        console.log("Error:", error.message);
+        payBtn.current.disabled = false;
+        setError(error.message);
+        return;
+      }
+
+      const { data } = await axios.post(
+        `${base_url}/payment/createCharge`,
+        {
+          paymentMethodId: paymentMethod.id,
+          amount: amount,
+          bookingId: bookingId,
+        },
+      );
+
+      console.log("Payment successful:", data);
+      navigate('/RentedVehicle');
+    } catch (error) {
+      payBtn.current.disabled = false;
+      console.log("Server error:", error?.response?.data?.message);
+      setError("An error occurred. Please try again later.");
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
-      <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full flex flex-col md:flex-row items-center">
-        <div className="flex-1">
-          <h2 className="text-2xl font-bold mb-4">PAYMENT</h2>
-          <p className="mb-6">Enter your details to book vehicle.</p>
-          <form>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="cardNumber"
-                placeholder="Card Number"
-                // value={formData.cardNumber} onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="expiry"
-                placeholder="MM/YY"
-                // value={formData.expiry} onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="cvv"
-                placeholder="CVV"
-                // value={formData.cvv} onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="postal"
-                placeholder="Postal"
-                // value={formData.postal} onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
-              />
-            </div>
-
-            <button
-              type="button"
-              className="w-full p-2 bg-gray-500 text-black rounded-lg mb-4"
-            >
-              Pay with Card
-            </button>
-
-            <Link to="./Home">
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="w-full p-2 bg-gray-500 text- rounded-lg"
-              >
-                Submit
-              </button>
-            </Link>
-          </form>
-        </div>
-        <div className="flex-1 flex justify-center">
-          <div className="bg-red-500 rounded-full w-48 h-48 flex items-center justify-center">
-            <img src={car} alt="Car" className="w-48  h-auto rounded-full" />
+    <div className="w-full flex flex-col items-center h-screen pt-5">
+      <div className="w-full flex items-center justify-center flex-col h-[80vh]">
+        <form
+          onSubmit={(e) => submitHandler(e)}
+          className="w-72 flex flex-col items-center justify-center gap-8"
+        >
+          <span className="text-2xl font-bold">Card Info</span>
+          <div className="w-full flex flex-row items-center justify-center gap-2 border border-red px-2">
+            <CardNumberElement className="outline-none w-full p-4" />
           </div>
-        </div>
+          <div className="w-full flex flex-row items-center justify-center gap-2 border border-red px-2">
+            <CardExpiryElement className="outline-none w-full p-4" />
+          </div>
+          <div className="w-full flex flex-row items-center justify-center gap-2 border border-red px-2">
+            <CardCvcElement className="outline-none w-full p-4" />
+          </div>
+          <input
+            type="submit"
+            value={`Pay - ${amount}`}
+            ref={payBtn}
+            className="w-full border border-red-500 bg-red-500 px-2 py-3 text-black rounded-md"
+          />
+          {error && (
+            <p className="text-red-500 text-sm mt-2">{error}</p>
+          )}
+        </form>
       </div>
     </div>
   );

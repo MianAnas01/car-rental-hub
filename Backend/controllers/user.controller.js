@@ -123,17 +123,9 @@ const generateToken = (id) => {
 
 const editProfile = async (req, res) => {
   try {
-    // Verify JWT token and extract user ID
-    const token = req.cookies.access_token;
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized: Missing token" });
-    }
-
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decodedToken.id;
-
+   
     // Check if the user ID from token matches the ID in the request params
-    if (userId !== req.params.id) {
+    if (!req.params.id) {
       return res
         .status(401)
         .json({ message: "You can only update your own account!" });

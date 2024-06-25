@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Header from '../components/Header'; 
 import Footer from '../components/Footer';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { base_url } from '../config/config';
+import { AuthContext } from '../context/auth/auth.provider';
 
 const Profile = () => {
+const {user} = useContext(AuthContext)
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -23,7 +27,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`/api/user/editProfile/${userId}`, formData);
+      const res = await axios.put(`${base_url}/user/editProfile/${user._id}`, formData);
       console.log(res.data); // Handle success response as needed
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -56,9 +60,7 @@ const Profile = () => {
               </div>
               <button type="submit" className="w-full p-3 mb-4 bg-gray-500 text-white rounded-lg">Update Profile</button>
               <br />
-              <Link to="./Home">
-                <button type="button" className="w-full p-3 mb-4 bg-gray-500 text-white rounded-lg">Sign Out</button>
-              </Link>
+             
             </form>
           </div>
           <div className="flex-1 flex justify-center">

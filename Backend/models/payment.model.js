@@ -1,21 +1,24 @@
-import Booking from "./booking.model";
 
-const { Mongoose } = require("mongoose")
+const  mongoose  = require("mongoose")
 
 
 const paymentSchema = new mongoose.Schema(
     {
-     BookingId: {
+     bookingId: {
         type: String,
         required: true,
      },
-     PaymantMethod: {
+     paymentMethod: {
         type: String,
         required: true,
      },
-     PaymentAmount: {
+     paymentAmount: {
         type: String,
         required: true,
+     },
+     stripeId: {
+      type: String,
+      required: true,
      }
 
     },
@@ -25,4 +28,4 @@ const paymentSchema = new mongoose.Schema(
 
 const Payment = mongoose.model("Payment", paymentSchema);
 
-export default Payment;
+module.exports = Payment;
