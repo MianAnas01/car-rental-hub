@@ -44,7 +44,7 @@ const Header = ({ links = [] }) => {
               </Link>
             </>
           )}
-          {links.map((link, index) => (
+          {/* {links.length>0 && links.map((link, index) => (
             <Link
               key={index}
               to={link.to}
@@ -52,7 +52,7 @@ const Header = ({ links = [] }) => {
             >
               <h1>{link.label}</h1>
             </Link>
-          ))}
+          ))} */}
         </div>
       </nav>
     </header>

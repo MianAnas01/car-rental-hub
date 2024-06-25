@@ -11,7 +11,7 @@ import { AuthContext } from "../context/auth/auth.provider";
 import axios from "axios";
 import { base_url } from "../config/config";
 
-const Home = () => {
+const Customer = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
@@ -232,4 +232,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Customer;

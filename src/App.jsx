@@ -1,4 +1,85 @@
-import "./App.css";
+// import "./App.css";
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import Home from "./components/Home";
+// import Header from "./components/Header";
+// import Footer from "./components/Footer.jsx";
+// import Signup from "./Pages/Signup";
+// import Login from "./Pages/Login";
+// import Rental from "./Pages/Rental";
+// import Customer from "./Pages/Customer";
+// import Showroom from "./Pages/Showroom";
+// import BookNow from "./Pages/BookNow";
+// import React, {useEffect, useState} from "react"
+// import Profile from "./Pages/Profile.jsx";
+// import Uploadvehicle from "./Pages/Uploadvehicle";
+// import Payment from "./Pages/Payment";
+// import Termsandconditions from "./Pages/Termsandconditions";
+// import Rentedvehicle from "./Pages/Rentedvehicle";
+// import Contract from "./Pages/Contract";
+// import { loadStripe } from '@stripe/stripe-js';
+// import { Elements } from '@stripe/react-stripe-js';
+// import ProtectedRouteRental from "./components/ProtectedRouteRental.jsx";
+// import "@fortawesome/fontawesome-free/css/all.css";
+// // import ProtectedRoute from "./components/ProtectedRouteRental.jsx";
+// import { base_url } from "./config/config.js";
+// import axios from "axios"
+// function App() {
+
+//   const [stripeKey, setStripeApiKey] = React.useState();
+//   const getStripeaApiKey = async () => {
+//     try {
+//       const { data } = await axios.get(`${base_url}/payment/stripeKey`);
+//       console.log(data, "data")
+//       setStripeApiKey(data.stripeApiKey);
+//     } catch (error) {
+//       console.log("stripeApiKey", error);
+//     }
+//   }
+
+//   useEffect(() => {
+//     getStripeaApiKey();
+//   }, []);
+
+//   return (
+//     <Router>
+//       <Routes>
+//         {/* <Route exact path='/Header' element={<Header />} /> */}
+//         <Route path="/" element={<Home />} />
+//         <Route path="/Home" element={<Home />} />
+//         <Route path="/Login" element={<Login />} />
+//         <Route path="/Signup" element={<Signup />} />
+//         <Route path="/Customer" element={<Customer />} />
+//         <Route path="/Rentedvehicle" element={<Rentedvehicle />} />
+//         <Route path="/ShowRoom" element={<Showroom />} />
+//         <Route path="/BookNow" element={<BookNow />} />
+//         <Route path="/Profile" element={<Profile />} />
+
+//         <ProtectedRouteRental rentalOnly>
+//           <Route path="/Rental" element={<Rental />} />
+//         </ProtectedRouteRental>
+//         <Route path="/Uploadvehicle" element={<Uploadvehicle />} />
+
+//         <Route path="/BookNow" element={<BookNow />} />
+//         {stripeKey && <Route
+//           path="/payment/:bookingId/:amount"
+//           element={
+//               <Elements stripe={loadStripe(stripeKey)}>
+//                 <Payment />
+//               </Elements>
+//           }
+//         />}
+//         <Route path="/Termsandconditions" element={<Termsandconditions />} />
+//         <Route path="/Contract" element={<Contract />} />
+
+//         <Route path="/Footer" element={<Footer />} />
+//       </Routes>
+//     </Router>
+//   );
+// }
+
+// export default App;
+
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Header from "./components/Header";
@@ -9,32 +90,31 @@ import Rental from "./Pages/Rental";
 import Customer from "./Pages/Customer";
 import Showroom from "./Pages/Showroom";
 import BookNow from "./Pages/BookNow";
-import React, {useEffect, useState} from "react"
 import Profile from "./Pages/Profile.jsx";
 import Uploadvehicle from "./Pages/Uploadvehicle";
 import Payment from "./Pages/Payment";
 import Termsandconditions from "./Pages/Termsandconditions";
 import Rentedvehicle from "./Pages/Rentedvehicle";
 import Contract from "./Pages/Contract";
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 import "@fortawesome/fontawesome-free/css/all.css";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProtectedRouteRental from "./components/ProtectedRouteRental.jsx";
 import { base_url } from "./config/config.js";
-import axios from "axios"
-function App() {
+import axios from "axios";
 
+function App() {
   const [stripeKey, setStripeApiKey] = React.useState();
   const getStripeaApiKey = async () => {
     try {
       const { data } = await axios.get(`${base_url}/payment/stripeKey`);
-      console.log(data, "data")
+      console.log(data, "data");
       setStripeApiKey(data.stripeApiKey);
     } catch (error) {
       console.log("stripeApiKey", error);
     }
-  }
+  };
 
   useEffect(() => {
     getStripeaApiKey();
@@ -43,35 +123,38 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route exact path='/Header' element={<Header />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Signup" element={<Signup />} />
-        <Route path="/Customer" element={<Customer />} />
-        <Route path="/Rentedvehicle" element={<Rentedvehicle />} />
         <Route path="/ShowRoom" element={<Showroom />} />
-        <Route path="/BookNow" element={<BookNow />} />
-        <Route path="/Profile" element={<Profile />} />
-        
-        <Route element={<ProtectedRoute rentalOnly />}>
-          <Route path="/Rental" element={<Rental />} />
-
-        </Route>
-        <Route path="/Uploadvehicle" element={<Uploadvehicle />} />
-
-        <Route path="/BookNow" element={<BookNow />} />
-        {stripeKey && <Route
-          path="/payment/:bookingId/:amount"
-          element={
-              <Elements stripe={loadStripe(stripeKey)}>
-                <Payment />
-              </Elements>
-          }
-        />}
         <Route path="/Termsandconditions" element={<Termsandconditions />} />
         <Route path="/Contract" element={<Contract />} />
+        
+        <Route element={<ProtectedRouteRental customerOnly />}>
+          <Route path="/Customer" element={<Customer />} />
+          <Route path="/Rentedvehicle" element={<Rentedvehicle />} />
+          <Route path="/BookNow" element={<BookNow />} />
+          <Route path="/Profile" element={<Profile />} />
+          {stripeKey && (
+            <Route
+              path="/payment/:bookingId/:amount"
+              element={
+                <Elements stripe={loadStripe(stripeKey)}>
+                  <Payment />
+                </Elements>
+              }
+            />
+          )}
+        </Route>
 
+        <Route element={<ProtectedRouteRental rentalOnly />}>
+          <Route path="/Rental" element={<Rental />} />
+          <Route path="/Uploadvehicle" element={<Uploadvehicle />} />
+          <Route path="/Profile" element={<Profile />} />
+        </Route>
+
+        
         <Route path="/Footer" element={<Footer />} />
       </Routes>
     </Router>

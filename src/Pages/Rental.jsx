@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Header from "../components/Header";
 import Profile from "./Profile";
 import Uploadvehicle from "./Uploadvehicle";
@@ -6,8 +6,12 @@ import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import BookNow from "./BookNow";
 import car2 from "../assets/car2.png";
+import { AuthContext } from "../context/auth/auth.provider";
+
 
 const Rental = () => {
+
+const {user} = useContext(AuthContext)
   const Links = [
     { to: "/Profile", label: "Profile" },
     user?.isRental &&
