@@ -3,13 +3,19 @@ const bcryptjs = require("bcryptjs");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const { response } = require("express");
-
+const path = require('path')
 // signup
 const userSignup = async (req, res) => {
+  
   try {
+    if (!req.file) {
+      return res.status(400).send("Bad Request: Image file is required.");
+    }
+ 
+
     let success = false;
     let user;
-    const { firstName, lastName, address, contact, email, password, role } = req.body;
+    const { firstName, lastName, address, contact, email, password, role, avatar} = req.body;
 
     // Check if the email is already in use
     const existingUser = await User.findOne({ email });
@@ -43,6 +49,12 @@ const userSignup = async (req, res) => {
         isCustomer: role.toLowerCase() === 'customer',
         isRental: role.toLowerCase() === 'rental',
       });
+      req.file.path = path.join("uploads", req.file.filename   ); 
+  
+      console.log(req.body, req.file);
+    const imageUrl = `${process.env.BACKEND_URL}/${req.file.path}`;
+
+    newUser.avatar = imageUrl;
 
       // Save the new user
       user = await newUser.save();
@@ -144,7 +156,7 @@ const editProfile = async (req, res) => {
 
     const { password, ...rest } = updatedUser._doc;
 
-    res.status(200).json(rest);
+    res.status(200).json({rest});
   } catch (error) {
     console.error("Error during profile update:", error);
     if (error instanceof jwt.JsonWebTokenError) {

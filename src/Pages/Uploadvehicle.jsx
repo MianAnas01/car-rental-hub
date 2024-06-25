@@ -22,6 +22,9 @@ const Uploadvehicle = () => {
     licensePlate: "",
     image: null,
   });
+  const [uploadImageStatus, setUploadImageStatus] = useState(null);
+  const [uploadVehicleStatus, setUploadVehicleStatus] = useState(null);
+  const [uploadVehicleError, setUploadVehicleError] = useState(null);
 
   const { user } = useContext(AuthContext);
 
@@ -39,8 +42,11 @@ const Uploadvehicle = () => {
       image: e.target.files[0],
     }));
   };
-
   const handleSubmit = async () => {
+    setLoading(true);
+    setUploadVehicleStatus(null);
+    setUploadVehicleError(null);
+
     const formDataToSend = new FormData();
     formDataToSend.append("carBrand", formData.brand);
     formDataToSend.append("carModel", formData.model);
@@ -51,11 +57,21 @@ const Uploadvehicle = () => {
     formDataToSend.append("licensePlate", formData.licensePlate);
     formDataToSend.append("images", formData.image);
     formDataToSend.append("rentalId", user?._id);
-    const { data } = await axios.post(
-      `${base_url}/vehicle/rental/uploadvehicle`,
-      formDataToSend
-    );
-    console.log(data);
+
+    try {
+      const { data } = await axios.post(
+        `${base_url}/vehicle/rental/uploadvehicle`,
+        formDataToSend
+      );
+      setVehicles([...vehicles, data?.NewVehicle]);
+      setUploadVehicleStatus("success");
+    } catch (error) {
+      console.error("Error uploading vehicle:", error.message);
+      setUploadVehicleStatus("error");
+      setUploadVehicleError("Failed to upload vehicle");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // get vehicle
@@ -118,11 +134,11 @@ const Uploadvehicle = () => {
         `${base_url}/booking/updateStatus/${bookingId}/accept`
       );
       if (response.status === 200) {
-        const updatedBookingRequests = bookingRequests.filter((booking) =>
-          booking._id !== bookingId
+        const updatedBookingRequests = bookingRequests.filter(
+          (booking) => booking._id !== bookingId
         );
         setBookingRequests(updatedBookingRequests);
-        console.log(bookingRequests, "booking requests")
+        console.log(bookingRequests, "booking requests");
       }
     } catch (error) {
       setError("Failed to accept booking request");
@@ -135,9 +151,8 @@ const Uploadvehicle = () => {
         `${base_url}/booking/updateStatus/${bookingId}/decline`
       );
       if (response.status === 200) {
-        const updatedBookingRequests = bookingRequests.filter((booking) =>
-          booking._id !== bookingId
-         
+        const updatedBookingRequests = bookingRequests.filter(
+          (booking) => booking._id !== bookingId
         );
         setBookingRequests(updatedBookingRequests);
       }
@@ -145,6 +160,21 @@ const Uploadvehicle = () => {
       setError("Failed to decline booking request");
     }
   };
+
+  const handleRemove = async (id) => {
+    try {
+      const response = await axios.delete(`${base_url}/vehicle/remove/${id}`);
+      if (response.status === 200) {
+        // Optionally, you can update the UI to reflect the removal
+        console.log("Vehicle removed successfully");
+        const updatedVehicles = vehicles?.filter((item) => item?._id != id);
+        setVehicles(updatedVehicles);
+      }
+    } catch (error) {
+      console.error("Error removing vehicle:", error.message);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -153,6 +183,7 @@ const Uploadvehicle = () => {
         <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full flex flex-col md:flex-row items-center">
           <div className="flex-1">
             <h2 className="text-2xl font-bold mb-4">UPLOAD VEHICLE</h2>
+            
             <p className="mb-6">Upload information about your vehicle.</p>
             <form>
               <div className="mb-4">
@@ -232,15 +263,31 @@ const Uploadvehicle = () => {
                 type="button"
                 onClick={handleSubmit}
                 className="w-full p-2 bg-gray-500 text-white rounded-lg"
+                disabled={loading}
               >
-                Upload
+                {loading ? "Uploading..." : "Upload"}
               </button>
             </form>
+            {uploadVehicleStatus === "success" && (
+              <div className="text-green-600">
+                Vehicle uploaded successfully
+              </div>
+            )}
+            {uploadVehicleStatus === "error" && (
+              <div className="text-red-600">{uploadVehicleError}</div>
+            )}
           </div>
           <div className="flex-1 flex justify-center">
             <div
               className="bg-red-500 rounded-full w-32 h-32 flex items-center justify-center relative cursor-pointer"
               onClick={() => document.getElementById("fileInput").click()}
+              style={{
+                backgroundImage: `url(${
+                  formData.image ? URL.createObjectURL(formData.image) : ""
+                })`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
             >
               <input
                 id="fileInput"
@@ -264,43 +311,62 @@ const Uploadvehicle = () => {
             vehicles?.length > 0 &&
             vehicles.map((item) => (
               <div
-                key={item._id}
+                key={item?._id}
                 className="flex items-center bg-red-500 text-white p-4 rounded-lg"
               >
                 <img
-                  src={item.avatar}
+                  src={item?.avatar}
                   alt="Car"
                   className="w-32 h-auto rounded-lg mr-4"
                 />
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.carBrand}</h3>
+                  <h3 className="text-xl font-bold">{item?.carBrand}</h3>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.carModel}</h3>
+                  <h3 className="text-xl font-bold">{item?.carModel}</h3>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.noOfSeats}</h3>
+                  <h3 className="text-xl font-bold">{item?.noOfSeats}</h3>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.transmission}</h3>
+                  <h3 className="text-xl font-bold">{item?.transmission}</h3>
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.address}</h3>
+                  <h3 className="text-xl font-bold">{item?.address}</h3>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.licensePlate}</h3>
+                  <h3 className="text-xl font-bold">{item?.licensePlate}</h3>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.status}</h3>
+                  <h3 className="text-xl font-bold">{item?.status}</h3>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold">{item.rentPerDay}</p>
+                  <p className="text-xl font-bold">{item?.rentPerDay}</p>
                   <p>per day</p>
                   <span className="bg-white text-red-500 px-2 py-1 rounded-full mt-2 inline-block">
-                    {item.status}
+                    {item?.status}
                   </span>
                 </div>
+                <span onClick={() => handleRemove(item._id)}>
+                  <svg
+                    className="w-6 h-6 text-gray-800 dark:text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                    />
+                  </svg>
+                </span>
               </div>
             ))
           ) : (
@@ -313,39 +379,6 @@ const Uploadvehicle = () => {
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
         <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
           <h2 className="text-2xl font-bold mb-4">BOOKING REQUESTS</h2>
-          {/* <div className="flex items-center bg-blue-500 text-white p-4 rounded-lg">
-            
-         <img
-              src={item.avatar}
-              alt="Car"
-              className="w-32 h-auto rounded-lg mr-4"
-            />{" "}
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{booking.carBrand}</h3>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{booking.carModel}</h3>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{booking.noOfSeats}</h3>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{booking.transmission}</h3>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{booking.address}</h3>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{booking.licensePlate}</h3>
-            </div>
-            <div className="text-right">
-              <p className="text-xl font-bold"> {booking.price}</p>
-              <p>per day</p> 
-
-              
-            </div>
-          </div> */}
-
           {bookingRequests?.length > 0 &&
             bookingRequests.map((booking) => (
               <div className="flex items-center bg-blue-500 text-white p-4 rounded-lg">

@@ -13,9 +13,10 @@ const Rental = () => {
 
 const {user} = useContext(AuthContext)
   const Links = [
-    { to: "/Profile", label: "Profile" },
     user?.isRental &&
     { to: "/Uploadvehicle", label: "Uploadvehicle" },
+        { to: "/Profile", label: "Profile" },
+
   ];
 
   return (

@@ -4,16 +4,16 @@ import Footer from '../components/Footer';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { base_url } from '../config/config';
-import { AuthContext } from '../context/auth/auth.provider';
+import { AuthContext, useAuth } from '../context/auth/auth.provider';
 
 const Profile = () => {
-const {user} = useContext(AuthContext)
+const {user, setUser} = useAuth();
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    contactNo: '',
-    emailAddress: '',
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    contact: user?.contact,
+    emailAddress: user?.email,
     password: ''
   });
 
@@ -29,6 +29,7 @@ const {user} = useContext(AuthContext)
     try {
       const res = await axios.put(`${base_url}/user/editProfile/${user._id}`, formData);
       console.log(res.data); // Handle success response as needed
+    setUser(res?.data?.rest)
     } catch (error) {
       console.error('Error updating profile:', error);
       // Handle error response here
@@ -50,7 +51,7 @@ const {user} = useContext(AuthContext)
                 <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" className="w-full p-2 border rounded-lg" />
               </div>
               <div className="mb-4">
-                <input type="text" name="contactNo" value={formData.contactNo} onChange={handleInputChange} placeholder="Contact No" className="w-full p-2 border rounded-lg" />
+                <input type="text" name="contact" value={formData.contact} onChange={handleInputChange} placeholder="Contact No" className="w-full p-2 border rounded-lg" />
               </div>
               <div className="mb-4">
                 <input type="text" name="emailAddress" value={formData.emailAddress} onChange={handleInputChange} placeholder="Email Address" className="w-full p-2 border rounded-lg" />

@@ -1,9 +1,10 @@
 const express = require('express');
 const { userSignup, userLogin, editProfile, getProfile } = require('../controllers/user.controller');
 const { isAuthenticated } = require('../middleware/authanticated');
+const {upload} = require("../utils/multer");
 const router = express.Router();
  
-router.post("/signup", userSignup);
+router.post("/signup", upload.single('images'), userSignup);
 
 router.post("/login", userLogin);
 

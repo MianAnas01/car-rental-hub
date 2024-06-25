@@ -129,13 +129,16 @@ function App() {
         <Route path="/Signup" element={<Signup />} />
         <Route path="/ShowRoom" element={<Showroom />} />
         <Route path="/Termsandconditions" element={<Termsandconditions />} />
-        <Route path="/Contract" element={<Contract />} />
+        <Route path="/Profile" element={<Profile />} />
         
+
         <Route element={<ProtectedRouteRental customerOnly />}>
           <Route path="/Customer" element={<Customer />} />
           <Route path="/Rentedvehicle" element={<Rentedvehicle />} />
           <Route path="/BookNow" element={<BookNow />} />
-          <Route path="/Profile" element={<Profile />} />
+          <Route path="/Contract" element={<Contract />} />
+
+          {/* <Route path="/Profile" element={<Profile />} /> */}
           {stripeKey && (
             <Route
               path="/payment/:bookingId/:amount"
@@ -147,11 +150,10 @@ function App() {
             />
           )}
         </Route>
-
         <Route element={<ProtectedRouteRental rentalOnly />}>
           <Route path="/Rental" element={<Rental />} />
           <Route path="/Uploadvehicle" element={<Uploadvehicle />} />
-          <Route path="/Profile" element={<Profile />} />
+ 
         </Route>
 
         

@@ -1,5 +1,5 @@
 const express = require("express");
-const {uploadVehicle, GetVehicles, vehicleNotAvailable,  checkVehicleAvailability} = require("../controllers/vehicle.controller") 
+const {uploadVehicle, GetVehicles, vehicleNotAvailable,  checkVehicleAvailability, removeVehicle} = require("../controllers/vehicle.controller") 
 const {upload} = require("../utils/multer")
 const router = express.Router();
 
@@ -7,5 +7,6 @@ router.post('/rental/uploadvehicle',  upload.single('images'), uploadVehicle);
 router.post('/rental/getvehicle' , GetVehicles)
 router.put("/vehiclenotavailable", vehicleNotAvailable)
 router.get('/vehicle/checkavailability/:id', checkVehicleAvailability);
+router.delete('/remove/:id', removeVehicle)
 
 module.exports = router;

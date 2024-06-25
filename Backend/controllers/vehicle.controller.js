@@ -38,7 +38,7 @@ const uploadVehicle = async (req, res) => {
       status: "active",
     });
 
-    res.json(NewVehicle);
+    res.status(200).json({NewVehicle});
   } catch (error) {
     console.error("Error during uploading vehicle", error);
     res.status(500).json({ message: "Internal server error" });
@@ -130,9 +130,25 @@ const vehicleNotAvailable = async (req, res) => {
   }
 };
 
+// remove vehicle
+const removeVehicle = async (req, res) => {
+ 
+  try {
+    const remove = await Vehicle.findByIdAndDelete(req.params.id);
+    if (!remove) {
+      res.status(404).json({message: "vehicle not removed, try with your own id"})
+    }
+    res.status(200).json({message: "vehicle removed successfully"})
+  } catch (error) {
+    res.status(500).send("Internal Server Error.");
+  }
+}
+
+
 module.exports = {
   uploadVehicle,
   GetVehicles,
   vehicleNotAvailable,
   checkVehicleAvailability,
+  removeVehicle,
 };
