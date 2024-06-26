@@ -18,16 +18,16 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedRole = localStorage.getItem('role');
-    console.log(savedToken, savedRole, "auth data")
+    const savedToken = localStorage.getItem("token");
+    const savedRole = localStorage.getItem("role");
+    console.log(savedToken, savedRole, "auth data");
     if (savedToken) {
       setToken(savedToken);
       setRole(savedRole);
       setAuthanticated(true);
       getProfile();
-    } 
-    
+    }
+
     setUserLoading(false);
   }, []);
 
@@ -49,22 +49,19 @@ const AuthProvider = ({ children }) => {
           Authorization: `${getToken}`,
         },
       });
-console.log(data, "user in get profile data")
+      console.log(data, "user in get profile data");
       setUser(data?.user);
     } catch (err) {
       console.log("🚀 ~ getClientProfile ~ err**********************:", err);
     } finally {
-
     }
   };
 
   const login = async (loginData, onSuccess, onFailure) => {
-
     try {
-      
       const { data } = await axios.post(`${base_url}/user/login`, loginData);
       localStorage.setItem("token", data?.token);
-      setToken(data?.token)
+      setToken(data?.token);
       setAuthanticated(true);
       setUser(data);
       onSuccess(data);
@@ -75,13 +72,13 @@ console.log(data, "user in get profile data")
     }
   };
 
-
-  const signup = async (signupData) => {
-
+  const signup = async (signupData, onSuccess, onFailure) => {
     try {
       const { data } = await axios.post(`${base_url}/user/signup`, signupData);
+      onSuccess(data);
       console.log("🚀 ~ signup ~ data:", data);
     } catch (err) {
+      onFailure(err);
       console.log("🚀 ~ signup ~ err:", err);
     } finally {
     }
@@ -108,4 +105,3 @@ console.log(data, "user in get profile data")
 export const useAuth = () => useContext(AuthContext);
 
 export default AuthProvider;
-

@@ -13,7 +13,10 @@ const SignUpForm = () => {
     role: "",
     image: null,
   });
+  const [errors, setErrors] = useState({});
   const navigation = useNavigate();
+  const [singUpSuccess, setSignUpSuccess] = useState("");
+  const [errorSignUp, setErrorSignUp] = useState("");
 
   const { signup } = useContext(AuthContext);
 
@@ -22,24 +25,10 @@ const SignUpForm = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formDataToSend = new FormData();
-    formDataToSend.append("firstName", formData.firstName);
-    formDataToSend.append("lastName", formData.lastName);
-    formDataToSend.append("address", formData.address);
-    formDataToSend.append("contact", formData.contact);
-    formDataToSend.append("email", formData.email);
-    formDataToSend.append("location)", formData.location);
-    formDataToSend.append("password", formData.password);
-    formDataToSend.append("images", formData.image);
-    formDataToSend.append("role", formData.role);
-    await signup(formDataToSend);
-    navigation("/login");
-
-    console.log(formDataToSend, "form data");
+    setErrors({
+      ...errors,
+      [e.target.name]: "",
+    });
   };
 
   const handleImageChange = (e) => {
@@ -47,15 +36,55 @@ const SignUpForm = () => {
       ...prevData,
       image: e.target.files[0],
     }));
+    setErrors({
+      ...errors,
+      image: "",
+    });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key] && key !== "image") {
+        newErrors[key] = "This field is required.";
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const onSuccess = (data) => {
+    setSignUpSuccess("SignUp Successfull");
+    navigation("/login");
+  };
+
+  const onFailure = (err) => {
+    setErrorSignUp(err?.response?.data?.message || "an error occured");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("firstName", formData.firstName);
+    formDataToSend.append("lastName", formData.lastName);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("contact", formData.contact);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("location", formData.location);
+    formDataToSend.append("password", formData.password);
+    formDataToSend.append("images", formData.image);
+    formDataToSend.append("role", formData.role);
+    await signup(formDataToSend, onSuccess, onFailure);
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log(token, "token");
     if (token) {
       navigation("/Home");
     }
-  }, []);
+  }, [navigation]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-200">
@@ -67,7 +96,7 @@ const SignUpForm = () => {
           Create a free account to start using our services for free!
         </p>
         <form onSubmit={handleSubmit}>
-        <div className="flex-1 flex justify-center">
+          <div className="flex-1 flex justify-center">
             <div
               className="mb-6 bg-red-500 rounded-full w-32 h-32 flex items-center justify-center relative cursor-pointer"
               onClick={() => document.getElementById("fileInput").click()}
@@ -88,6 +117,7 @@ const SignUpForm = () => {
               />
               <p className="text-white mt-2">Add Image</p>
             </div>
+            {errors.image && <p className="text-red-500">{errors.image}</p>}
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
@@ -98,6 +128,10 @@ const SignUpForm = () => {
               onChange={handleChange}
               className="p-2 border border-gray-300 rounded"
             />
+            {errors.firstName && (
+              <p className="text-red-500">{errors.firstName}</p>
+            )}
+
             <input
               type="text"
               name="lastName"
@@ -106,6 +140,9 @@ const SignUpForm = () => {
               onChange={handleChange}
               className="p-2 border border-gray-300 rounded"
             />
+            {errors.lastName && (
+              <p className="text-red-500">{errors.lastName}</p>
+            )}
           </div>
           <div className="mb-4">
             <input
@@ -116,6 +153,7 @@ const SignUpForm = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.address && <p className="text-red-500">{errors.address}</p>}
           </div>
           <div className="mb-4">
             <input
@@ -126,6 +164,7 @@ const SignUpForm = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.contact && <p className="text-red-500">{errors.contact}</p>}
           </div>
           <div className="mb-4">
             <input
@@ -136,6 +175,7 @@ const SignUpForm = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.email && <p className="text-red-500">{errors.email}</p>}
           </div>
           <div className="mb-4">
             <input
@@ -146,6 +186,15 @@ const SignUpForm = () => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
+            {errors.password && (
+              <p className="text-red-500">{errors.password}</p>
+            )}
+          </div>
+          <div
+            className={`${errorSignUp ? "text-red-500" : "text-green-500"}  `}
+          >
+            {errorSignUp && errorSignUp}
+            {singUpSuccess && singUpSuccess}
           </div>
 
           <button
@@ -158,7 +207,7 @@ const SignUpForm = () => {
                 },
               })
             }
-            className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
+            className="w-full p-3 mb-4 font-bold text-white bg-gray-400 hover:bg-gray-500 rounded-lg"
           >
             SignUp as a customer
           </button>
@@ -172,7 +221,7 @@ const SignUpForm = () => {
                 },
               })
             }
-            className="w-full p-3 mb-4 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg"
+            className="w-full p-3 mb-4 font-bold text-white bg-gray-400 hover:bg-gray-500 rounded-lg"
           >
             SignUp as a rental
           </button>

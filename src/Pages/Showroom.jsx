@@ -17,7 +17,7 @@ const Showroom = () => {
         setLoading(true);
         const response = await axios.post(
           `${base_url}/vehicle/rental/getvehicle`,
-          { "all": "all" }
+          { all: "all" }
         );
         setVehicles(response.data?.vehicles);
       } catch (error) {
@@ -29,43 +29,52 @@ const Showroom = () => {
     fetchVehicles();
   }, []);
 
-  const filteredVehicles = vehicles.filter(vehicle => {
-    const matchesSearch = vehicle.carBrand.toLowerCase().includes(searchText.toLowerCase()) ||
-                         vehicle.carModel.toLowerCase().includes(searchText.toLowerCase()) ||
-                         vehicle.address.toLowerCase().includes(searchText.toLowerCase());
-    const withinPriceRange = vehicle.rentPerDay >= priceRange[0] && vehicle.rentPerDay <= priceRange[1];
-    const matchesBrand = selectedBrand === "" || vehicle.carBrand === selectedBrand;
+  const filteredVehicles = vehicles.filter((vehicle) => {
+    const matchesSearch =
+      vehicle.carBrand.toLowerCase().includes(searchText.toLowerCase()) ||
+      vehicle.carModel.toLowerCase().includes(searchText.toLowerCase()) ||
+      vehicle.address.toLowerCase().includes(searchText.toLowerCase());
+    const withinPriceRange =
+      vehicle.rentPerDay >= priceRange[0] &&
+      vehicle.rentPerDay <= priceRange[1];
+    const matchesBrand =
+      selectedBrand === "" || vehicle.carBrand === selectedBrand;
     return matchesSearch && withinPriceRange && matchesBrand;
   });
 
-  
   const carBrandSet = new Set();
   vehicles.forEach((item) => {
     carBrandSet.add(item.carBrand);
   });
-  
+
   const carBrandoptions = Array.from(carBrandSet).map((carBrand) => {
     return { key: carBrand };
   });
-  
+
   return (
     <div>
       <Header />
-      <div className="p-4 bg-gray-200">
+      <div className="text-center bg-gray-200 pt-2">
+        <h1 className="text-4xl font-bold">Right Place Right Time.</h1>
+      </div>
+
+      <div className=" bg-gray-200 text-center pt-5">
         <input
           type="text"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Search"
-          className="p-2 border border-gray-300 rounded"
+          placeholder="Search Brand or Model"
+          className="p-2 border border-gray-300 rounded "
         />
         <input
           type="range"
           min="0"
           max="5000"
           value={priceRange[1]}
-          onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-          className="slider"
+          onChange={(e) =>
+            setPriceRange([priceRange[0], parseInt(e.target.value)])
+          }
+          className="slider mt-2"
         />
         <span className="ml-4">{priceRange[1]}</span>
         <select
@@ -73,8 +82,10 @@ const Showroom = () => {
           onChange={(e) => setSelectedBrand(e.target.value)}
           className="p-2 border border-gray-300 rounded"
         >
-          <option value="">Vehicle company</option>
-          {carBrandoptions?.map((item)=> <option value={item.key}>{item.key}</option>)}
+          <option value="">Vehicle Brand</option>
+          {carBrandoptions?.map((item) => (
+            <option value={item.key}>{item.key}</option>
+          ))}
         </select>
       </div>
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
@@ -84,7 +95,10 @@ const Showroom = () => {
           {!loading ? (
             filteredVehicles.length > 0 &&
             filteredVehicles.map((item) => (
-              <div key={item._id} className="flex items-center bg-red-500 text-white p-4 rounded-lg">
+              <div
+                key={item._id}
+                className="flex items-center bg-red-500 text-white p-4 rounded-lg mb-4"
+              >
                 <img
                   src={item.avatar}
                   alt="Car"
@@ -109,10 +123,6 @@ const Showroom = () => {
                 <div className="flex-1">
                   <h3 className="text-xl font-bold">{item.licensePlate}</h3>
                 </div>
-
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold">{item.status}</h3>
-                </div>
                 <div className="text-right">
                   <p className="text-xl font-bold">{item.rentPerDay}</p>
                   <p>per day</p>
@@ -133,6 +143,3 @@ const Showroom = () => {
 };
 
 export default Showroom;
-
-
-

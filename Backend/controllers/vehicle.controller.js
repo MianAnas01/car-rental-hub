@@ -5,16 +5,6 @@ const path = require("path");
 // upload Vehicle
 const uploadVehicle = async (req, res) => {
   try {
-    // Check if the user making the request has the role 'rental'
-    // if (req.user.role !== "rental") {
-    //   return res
-    //     .status(403)
-    //     .send("Forbidden: Only users with role 'rental' can upload vehicles.");
-    // }
-
-    // const presentBrand = await Brand.findById(req.body.brand);
-
-    // Check if an image is included in the request
     if (!req.file) {
       return res.status(400).send("Bad Request: Image file is required.");
     }
@@ -62,9 +52,10 @@ const GetVehicles = async (req, res) => {
     } else if (req.body.customerId) {
       vehicles = await Vehicle.find({ customerId: req.body.customerId });
     } else if (req.body.all) {
-      vehicles = await Vehicle.find();
+      vehicles = await Vehicle.find({ status: { $ne: 'disable' } });
+  }
+  
 
-    } 
 
     res.status(200).json({ vehicles });
   } catch (error) {
@@ -109,18 +100,18 @@ const checkVehicleAvailability = async (req, res) => {
 };
 
 // vehicle Not Available
-const vehicleNotAvailable = async (req, res) => {
+const statusUpdate = async (req, res) => {
   try {
     const vehicleId = req.params.id;
 
     const item = await Vehicle.findByIdAndUpdate(
       vehicleId,
-      { $set: { status: "Not Available" } },
+      { $set: { status: "disable" } },
       { new: true }
     );
 
     if (item) {
-      res.json(item);
+      res.status(200).json({item});
     } else {
       res.status(404).send("This vehicle is not available.");
     }
@@ -134,7 +125,7 @@ const vehicleNotAvailable = async (req, res) => {
 const removeVehicle = async (req, res) => {
  
   try {
-    const remove = await Vehicle.findByIdAndDelete(req.params.id);
+    const remove = await Vehicle.findByIdAndUpdate(req.params.id);
     if (!remove) {
       res.status(404).json({message: "vehicle not removed, try with your own id"})
     }
@@ -148,7 +139,7 @@ const removeVehicle = async (req, res) => {
 module.exports = {
   uploadVehicle,
   GetVehicles,
-  vehicleNotAvailable,
   checkVehicleAvailability,
   removeVehicle,
+  statusUpdate,
 };

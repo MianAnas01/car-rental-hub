@@ -3,19 +3,27 @@ const bcryptjs = require("bcryptjs");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const { response } = require("express");
-const path = require('path')
+const sendEmail = require("../utils/sendEmail");
+const path = require("path");
 // signup
 const userSignup = async (req, res) => {
-  
   try {
     if (!req.file) {
       return res.status(400).send("Bad Request: Image file is required.");
     }
- 
 
     let success = false;
     let user;
-    const { firstName, lastName, address, contact, email, password, role, avatar} = req.body;
+    const {
+      firstName,
+      lastName,
+      address,
+      contact,
+      email,
+      password,
+      role,
+      avatar,
+    } = req.body;
 
     // Check if the email is already in use
     const existingUser = await User.findOne({ email });
@@ -25,14 +33,15 @@ const userSignup = async (req, res) => {
 
     if (existingUser) {
       // Update existing user with the new role
-      if (role === 'customer') {
+      if (role === "customer") {
         existingUser.isCustomer = true;
-      } else if (role=== 'rental') {
+      } else if (role === "rental") {
         existingUser.isRental = true;
       } else {
         return res.status(400).json({
           success: false,
-          message: "Invalid role provided. Please specify 'Customer' or 'Rental'.",
+          message:
+            "Invalid role provided. Please specify 'Customer' or 'Rental'.",
         });
       }
       // Save the updated user
@@ -46,15 +55,15 @@ const userSignup = async (req, res) => {
         contact,
         email,
         password: hashedPassword,
-        isCustomer: role.toLowerCase() === 'customer',
-        isRental: role.toLowerCase() === 'rental',
+        isCustomer: role.toLowerCase() === "customer",
+        isRental: role.toLowerCase() === "rental",
       });
-      req.file.path = path.join("uploads", req.file.filename   ); 
-  
-      console.log(req.body, req.file);
-    const imageUrl = `${process.env.BACKEND_URL}/${req.file.path}`;
+      req.file.path = path.join("uploads", req.file.filename);
 
-    newUser.avatar = imageUrl;
+      console.log(req.body, req.file);
+      const imageUrl = `${process.env.BACKEND_URL}/${req.file.path}`;
+
+      newUser.avatar = imageUrl;
 
       // Save the new user
       user = await newUser.save();
@@ -135,7 +144,6 @@ const generateToken = (id) => {
 
 const editProfile = async (req, res) => {
   try {
-   
     // Check if the user ID from token matches the ID in the request params
     if (!req.params.id) {
       return res
@@ -156,28 +164,99 @@ const editProfile = async (req, res) => {
 
     const { password, ...rest } = updatedUser._doc;
 
-    res.status(200).json({rest});
+    res.status(200).json({ rest });
   } catch (error) {
     console.error("Error during profile update:", error);
     if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({ message: "Unauthorized: Invalid token" });
     }
-    res.status(500).json({ message:"An error occurred while updating the profile. Please try again later.", });
+    res
+      .status(500)
+      .json({
+        message:
+          "An error occurred while updating the profile. Please try again later.",
+      });
   }
 };
 
 // get profile
 
-const getProfile  = async (req, res) => {
-try {
-  const user = await User.findById(req.user._id);
-if(
-  !user 
-)
-{res.status(404).json({message: "user not found"})}
-res.status(200).json({user}) 
-} catch (error) {
-  res.status(500).json({ message:"An error occurred while getting profile data. Please try again later.", });
-}
-}
-module.exports = { userSignup, userLogin, editProfile, getProfile };
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      res.status(404).json({ message: "user not found" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message:
+          "An error occurred while getting profile data. Please try again later.",
+      });
+  }
+};
+
+// forget password
+const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    res.status(404).json({ message: "user not found" });
+  }
+  const resetToken = generateToken(user?._id);
+
+  //resetpasswordUrl
+  const resetPasswordUrl = `${process.env.REACT_APP_BASE_URL}/password/reset/${resetToken}`;
+  //message for customers
+  const message = `Here is your password Reset Token :- \n\n ${resetPasswordUrl} 
+  \n\n\n if you have not requested this email, please ignore it.`;
+  //
+  console.log("before try catch")
+  try {
+    //send Email function with an object object
+    await sendEmail({
+      email: user.email,
+      subject: "Car Rental Hub Password Recovery.",
+      message,
+    });
+    console.log("user's mail")
+
+    res.status(200).json({
+    success: true,
+      message: "Email sent Successfully.",
+    });
+  } catch (err) {
+    //its an server error;
+    res
+      .status(500)
+      .json({
+        message: "An error occurred while sending email for forget password.",
+      });
+  }
+};
+
+// resetPassword when clicks on forgot link
+const resetPassword = async (req, res) => {
+
+  // we will find that user with this token and if the time is greater than now.
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    res.status(404);
+    throw new Error("token is invlid ");
+  }
+
+  if (req.body.password != req.body.confirmPassword) {
+    res.status(400);
+    throw new Error("password don't match");
+  }
+
+  const hashedPassword = await bcryptjs.hash(req.body.password, 10);
+  user.password = hashedPassword;
+  await user.save();
+
+  sendTokenWithCookie(user, 200, res); //to login user
+};
+
+module.exports = { userSignup, userLogin, editProfile, getProfile, forgetPassword , resetPassword };

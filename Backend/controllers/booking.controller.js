@@ -17,6 +17,14 @@ const newBooking = async (req, res) => {
       endDate,
     } = req.body;
 
+    const disableBooking = await Vehicle.find({
+      _id: vehicleId,
+      status: "disable",
+    });
+    if (disableBooking.length > 0) {
+      res.status(400).json({ message: "vehicle not available" });
+    }
+
     const alreadyBooked = await Vehicle.find({
       _id: vehicleId,
       status: "inactive",
@@ -25,6 +33,8 @@ const newBooking = async (req, res) => {
       res.status(400).json({ message: "vehicle already booked" });
     }
 
+
+    
     const vehicle = await Vehicle.findById(vehicleId);
     if (!vehicle) {
       res.status(404).json({ message: "vehicle not found" });
@@ -51,6 +61,7 @@ const newBooking = async (req, res) => {
     });
 
     // Update the vehicle status to 'Not Available'
+   
     await Vehicle.findByIdAndUpdate(
       vehicleId,
       { $set: { status: "inactive" } },

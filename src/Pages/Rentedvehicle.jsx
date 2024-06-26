@@ -49,7 +49,7 @@ const Rentedvehicle = () => {
       <Header links={Links} />
 
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
-        <div className="bg-GRAY-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
+        <div className="p-8 rounded-lg shadow-lg max-w-4xl bg-gray-00 w-full">
           <h2 className="text-2xl font-bold mb-4">RENTED VEHICLES</h2>
           <p className="mb-6">Your vehicles which you rented from the site.</p>
           {rentedVehicles?.length > 0 &&
@@ -63,21 +63,18 @@ const Rentedvehicle = () => {
                   alt={vehicle.vehicleId.model}
                   className="w-32 h-auto rounded-lg mr-4"
                 />
-                <div className="flex-1">
+                <div className="flex-1 font-bold text-xl">
                   <p>
                     {vehicle.vehicleId.carBrand} {vehicle.vehicleId.carModel}{" "}
                     {vehicle.vehicleId.noOfSeats} {vehicle.vehicleId.address}{" "}
                     {vehicle.vehicleId.licensePlate}{" "}
                     {vehicle.vehicleId.transmission}
                   </p>
-                  <p className="mt-2">Rented on: {vehicle.vehicleId.from}</p>
-                  <p>return date: {vehicle.vehicleId.to}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-bold">
-                    {vehicle.vehicleId.rentPerDay}
+                  Per Day Rs/- {vehicle.vehicleId.rentPerDay}
                   </p>
-                  <p>per day</p>
                   <span className="bg-white text-black px-2 py-1 rounded-full mt-2 inline-block">
                     {vehicle.status}
                   </span>
@@ -86,14 +83,14 @@ const Rentedvehicle = () => {
             ))}
 
           <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
-            <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
+            <div className=" bg-gray-300 rounded-lg p-8 max-w-4xl w-full">
               <h2 className="text-2xl font-bold mb-4">PENDING REQUESTS</h2>
 
               {pendingVehicles?.length > 0 &&
                 pendingVehicles.map((vehicle) => (
                   <div
-                    key={vehicle._id} // _id is the unique identifier for each vehicle
-                    className="flex items-center bg-blue-500 text-white p-4 rounded-lg"
+                    key={vehicle._id} 
+                    className="flex items-center bg-blue-500 text-white p-4 rounded-lg mb-4"
                   >
                     <img
                       src={vehicle.vehicleId.avatar}
@@ -104,8 +101,7 @@ const Rentedvehicle = () => {
                       <p className="text-xl font-bold">{`${vehicle.vehicleId.carBrand} ${vehicle.vehicleId.carModel} ${vehicle.vehicleId.noOfSeats}  ${vehicle.vehicleId.address}  ${vehicle.vehicleId.licensePlate}  ${vehicle.vehicleId.transmission}`}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-bold">{`Rs. ${vehicle.vehicleId.rentPerDay}`}</p>
-                      <p>per day</p>
+                      <p className="text-xl font-bold ">Per Day Rs/- {vehicle.vehicleId.rentPerDay}</p>
                       {vehicle.status === "request" ? (
                         <span className="bg-gray-300 px-2 py-1 rounded-full mt-2 inline-block cursor-not-allowed">
                           PAYMENT
@@ -119,6 +115,7 @@ const Rentedvehicle = () => {
                       )}
                     </div>
                   </div>
+
                 ))}
             </div>
           </div>
@@ -130,3 +127,5 @@ const Rentedvehicle = () => {
 };
 
 export default Rentedvehicle;
+
+
