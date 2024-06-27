@@ -17,6 +17,7 @@ const Customer = () => {
   const [searchText, setSearchText] = useState("");
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const { user } = useAuth();
   const navigation = useNavigate();
@@ -59,11 +60,10 @@ const Customer = () => {
       vehicle.carModel.toLowerCase().includes(searchText.toLowerCase()) ||
       vehicle.address.toLowerCase().includes(searchText.toLowerCase());
     const withinPriceRange =
-      vehicle.rentPerDay >= priceRange[0] &&
-      vehicle.rentPerDay <= priceRange[1];
-    const matchesBrand =
-      selectedBrand === "" || vehicle.carBrand === selectedBrand;
-    return matchesSearch && withinPriceRange && matchesBrand;
+      vehicle.rentPerDay >= priceRange[0] && vehicle.rentPerDay <= priceRange[1];
+    const matchesBrand = selectedBrand === "" || vehicle.carBrand === selectedBrand;
+    const matchesStatus = selectedStatus === "" || vehicle.status === selectedStatus;
+    return matchesSearch && withinPriceRange && matchesBrand && matchesStatus;
   });
 
   const carBrandSet = new Set();
@@ -97,23 +97,18 @@ const Customer = () => {
             min="0"
             max="5000"
             value={priceRange[1]}
-            onChange={(e) =>
-              setPriceRange([priceRange[0], parseInt(e.target.value)])
-            }
+            onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
             className="slider mt-2"
           />
-          <span className="ml-4">{priceRange[1]}</span>
+          <span className="ml-4">{priceRange[1]}</span> = Price Range
           <select
-            value={selectedBrand}
-            onChange={(e) => setSelectedBrand(e.target.value)}
-            className="p-2 border border-gray-300 rounded"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="p-2 border border-gray-300 rounded ml-4"
           >
-            <option value="">Vehicle Brand</option>
-            {carBrandOptions.map((item) => (
-              <option key={item.key} value={item.key}>
-                {item.key}
-              </option>
-            ))}
+            <option value="">Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
           </select>
         </div>
 
@@ -157,9 +152,7 @@ const Customer = () => {
                         {item.status}
                       </span>
                       <div
-                        onClick={() =>
-                          item.status !== "inactive" && handleBookNow(item)
-                        }
+                        onClick={() => item.status !== "inactive" && handleBookNow(item)}
                         className={`flex-1 ${
                           item.status === "inactive" ? "cursor-not-allowed" : ""
                         }`}

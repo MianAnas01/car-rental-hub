@@ -10,6 +10,7 @@ const Showroom = () => {
   const [searchText, setSearchText] = useState("");
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -39,7 +40,9 @@ const Showroom = () => {
       vehicle.rentPerDay <= priceRange[1];
     const matchesBrand =
       selectedBrand === "" || vehicle.carBrand === selectedBrand;
-    return matchesSearch && withinPriceRange && matchesBrand;
+    const matchesStatus =
+      selectedStatus === "" || vehicle.status === selectedStatus;
+    return matchesSearch && withinPriceRange && matchesBrand && matchesStatus;
   });
 
   const carBrandSet = new Set();
@@ -47,9 +50,11 @@ const Showroom = () => {
     carBrandSet.add(item.carBrand);
   });
 
-  const carBrandoptions = Array.from(carBrandSet).map((carBrand) => {
+  const carBrandOptions = Array.from(carBrandSet).map((carBrand) => {
     return { key: carBrand };
   });
+
+  const statusOptions = ["active", "inactive"];
 
   return (
     <div>
@@ -58,13 +63,13 @@ const Showroom = () => {
         <h1 className="text-4xl font-bold">Right Place Right Time.</h1>
       </div>
 
-      <div className=" bg-gray-200 text-center pt-5">
+      <div className="bg-gray-200 text-center pt-5">
         <input
           type="text"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="Search Brand or Model"
-          className="p-2 border border-gray-300 rounded "
+          className="p-2 border border-gray-300 rounded"
         />
         <input
           type="range"
@@ -76,18 +81,22 @@ const Showroom = () => {
           }
           className="slider mt-2"
         />
-        <span className="ml-4">{priceRange[1]}</span>
+        <span className="ml-4">{priceRange[1]}</span> = Price Range
         <select
-          value={selectedBrand}
-          onChange={(e) => setSelectedBrand(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          className="p-2 border border-gray-300 rounded ml-2"
         >
-          <option value="">Vehicle Brand</option>
-          {carBrandoptions?.map((item) => (
-            <option value={item.key}>{item.key}</option>
+          <option value="">Status</option>
+          {statusOptions.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
           ))}
         </select>
+       
       </div>
+
       <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
         <div className="bg-gray-300 p-8 rounded-lg shadow-lg max-w-4xl w-full">
           <h2 className="text-2xl font-bold mb-4">Available VEHICLES</h2>
