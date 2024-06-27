@@ -49,7 +49,7 @@ const Customer = () => {
 
   const handleBookNow = (item) => {
     const queryParams = new URLSearchParams();
-    queryParams.set('carId', item._id);
+    queryParams.set("carId", item._id);
     navigation(`/BookNow?${queryParams.toString()}`);
   };
 
@@ -59,8 +59,10 @@ const Customer = () => {
       vehicle.carModel.toLowerCase().includes(searchText.toLowerCase()) ||
       vehicle.address.toLowerCase().includes(searchText.toLowerCase());
     const withinPriceRange =
-      vehicle.rentPerDay >= priceRange[0] && vehicle.rentPerDay <= priceRange[1];
-    const matchesBrand = selectedBrand === "" || vehicle.carBrand === selectedBrand;
+      vehicle.rentPerDay >= priceRange[0] &&
+      vehicle.rentPerDay <= priceRange[1];
+    const matchesBrand =
+      selectedBrand === "" || vehicle.carBrand === selectedBrand;
     return matchesSearch && withinPriceRange && matchesBrand;
   });
 
@@ -154,8 +156,21 @@ const Customer = () => {
                       <span className="bg-white text-red-500 px-2 py-1 rounded-full mt-2 inline-block">
                         {item.status}
                       </span>
-                      <div onClick={() => handleBookNow(item)} className="flex-1">
-                        <h3 className="mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                      <div
+                        onClick={() =>
+                          item.status !== "inactive" && handleBookNow(item)
+                        }
+                        className={`flex-1 ${
+                          item.status === "inactive" ? "cursor-not-allowed" : ""
+                        }`}
+                      >
+                        <h3
+                          className={`mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 ${
+                            item.status === "inactive"
+                              ? "bg-gray-300 hover:bg-gray-300"
+                              : ""
+                          }`}
+                        >
                           Book Now
                         </h3>
                       </div>

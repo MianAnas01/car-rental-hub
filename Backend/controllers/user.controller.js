@@ -209,6 +209,7 @@ const forgetPassword = async (req, res) => {
 
   //resetpasswordUrl
   const resetPasswordUrl = `${process.env.REACT_APP_BASE_URL}/password/reset/${resetToken}`;
+  console.log(resetPasswordUrl, "pass url");
   //message for customers
   const message = `Here is your password Reset Token :- \n\n ${resetPasswordUrl} 
   \n\n\n if you have not requested this email, please ignore it.`;
@@ -255,8 +256,7 @@ const resetPassword = async (req, res) => {
   const hashedPassword = await bcryptjs.hash(req.body.password, 10);
   user.password = hashedPassword;
   await user.save();
-
-  sendTokenWithCookie(user, 200, res); //to login user
+res.status(200).json({message: "password reset succesfully"})
 };
 
 module.exports = { userSignup, userLogin, editProfile, getProfile, forgetPassword , resetPassword };

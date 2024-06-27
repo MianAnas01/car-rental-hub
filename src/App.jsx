@@ -24,6 +24,7 @@ import ProtectedRouteRental from "./components/ProtectedRouteRental.jsx";
 import { base_url } from "./config/config.js";
 import axios from "axios";
 import ForgetPassword from "./Pages/ForgetPassword.jsx";
+import ResetPassword from "./Pages/ResetPassword.jsx";
 
 function App() {
   const [stripeKey, setStripeApiKey] = React.useState();
@@ -50,7 +51,8 @@ function App() {
         <Route path="/Signup" element={<Signup />} />
         <Route path="/ShowRoom" element={<Showroom />} />
         <Route path="/password/forget" element={<ForgetPassword />} />
-        
+        <Route path="/password/reset/:token" element={<ResetPassword />} />
+
         <Route path="/Termsandconditions" element={<Termsandconditions />} />
         <Route path="/Profile" element={<Profile />} />
         
