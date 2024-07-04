@@ -10,15 +10,17 @@ import { useContext } from "react";
 import { useAuth } from "../context/auth/auth.provider";
 
 const Profile = () => {
-const {user} = useAuth();
+  const { user } = useAuth();
 
   const Links = [
     { to: "/Showroom", label: "Showroom" },
-    user?.isRental &&
-    { to: "/uploadVehicle", label: "Upload Vehicle" },
-      user?.isCustomer &&
-    { to: "/rentedVehicle", label: "Rented Vehicle" },
+    user?.isRental && { to: "/Rental", label: "Rental" },
 
+    { to: "/uploadVehicle", label: "Upload Vehicle" },
+
+    user?.isCustomer && { to: "/Customer", label: "Customer" },
+
+    { to: "/rentedVehicle", label: "Rented Vehicle" },
   ];
 
   return (
@@ -51,19 +53,19 @@ const {user} = useAuth();
           />
         </div>
 
-        <div className="md:flex-row items-center md:items-start pr-6 shadow-lg h-80">
-          <div className="w-550 h-484 pr10">
-            <h2 className="text-4xl font-bold mb-2">HOW DOES IT WORK?</h2>
-            <p className="text-gray-700 text-2xl font-bold">
-              A car rental hub website serves as a centralized platform for
-              customers to easily browse, compare, and book rental vehicles from
-              various providers. It offers a user-friendly interface with search
-              filters for vehicle type, rental duration, and location, ensuring
-              a seamless experience. Integrated with secure payment gateways and
-              customer reviews, the website ensures transparency and
-              reliability. Additional features like loyalty programs, special
-              deals, and mobile app integration enhance convenience, making it
-              the go-to solution for all car rental needs.
+        <div className="md:flex-row items-center md:items-start  h-120 rounded-lg overflow-hidden">
+          <div className="w-550 h-484 pr-10 bg-gray-300 p-6">
+            <h2 className="text-4xl font-bold mb-2 text-gray-800">
+              HOW DOES IT WORK?
+            </h2>
+            <p className="text-gray-700 text-xl font-bold">
+              Car rental hub website serves as a centralized platform for
+              customers to easily browse and book rental vehicles from various
+              providers. Also any user can upload their vehicle on platform to
+              put them on rent. It offers a user-friendly interface with search
+              filters for vehicle brand and model ensuring a seamless
+              experience. Integrated with secure payment gateways making it the
+              go-to solution for all car rental needs.
             </p>
           </div>
         </div>

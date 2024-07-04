@@ -93,15 +93,15 @@ const Rentedvehicle = () => {
                     className="flex items-center bg-blue-500 text-white p-4 rounded-lg mb-4"
                   >
                     <img
-                      src={vehicle.vehicleId.avatar}
-                      alt={vehicle.vehicleId.model}
+                      src={vehicle?.vehicleId?.avatar}
+                      alt={vehicle?.vehicleId?.model}
                       className="w-32 h-auto rounded-lg mr-4"
                     />
                     <div className="flex ">
-                      <p className="text-xl font-bold">{`${vehicle.vehicleId.carBrand} ${vehicle.vehicleId.carModel} ${vehicle.vehicleId.noOfSeats}  ${vehicle.vehicleId.address}  ${vehicle.vehicleId.licensePlate}  ${vehicle.vehicleId.transmission}`}</p>
+                      <p className="text-xl font-bold">{`${vehicle?.vehicleId?.carBrand} ${vehicle?.vehicleId?.carModel} ${vehicle?.vehicleId?.noOfSeats}  ${vehicle?.vehicleId?.address}  ${vehicle?.vehicleId?.licensePlate}  ${vehicle?.vehicleId?.transmission}`}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-bold ">Per Day Rs/- {vehicle.vehicleId.rentPerDay}</p>
+                      <p className="text-xl font-bold ">Per Day Rs/- {vehicle?.vehicleId?.rentPerDay}</p>
                       {vehicle.status === "request" ? (
                         <span className="bg-gray-300 px-2 py-1 rounded-full mt-2 inline-block cursor-not-allowed">
                           PAYMENT

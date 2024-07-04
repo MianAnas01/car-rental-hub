@@ -23,7 +23,8 @@ const Customer = () => {
   const navigation = useNavigate();
   const Links = [
     { to: "/Profile", label: "Profile" },
-    user?.isCustomer && { to: "/Rentedvehicle", label: "Rentedvehicle" },
+    user?.isCustomer && 
+    { to: "/Rentedvehicle", label: "Rentedvehicle" },
   ];
 
   useEffect(() => {

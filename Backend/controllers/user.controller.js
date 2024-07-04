@@ -151,7 +151,6 @@ const editProfile = async (req, res) => {
         .json({ message: "You can only update your own account!" });
     }
 
-    // Proceed with profile update
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },

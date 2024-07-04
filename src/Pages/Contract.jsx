@@ -35,7 +35,6 @@ const Contract = () => {
     fetchAdditionalData();
   }, [bookingId]); // Dependency on bookingData ensures the effect is re-run when bookingData changes
 
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-4">
       <div className="bg-gray-300 p-8 rounded-lg shadow-md w-full max-w-lg">
@@ -50,7 +49,8 @@ const Contract = () => {
             <span className="font-semibold">{additionalData?.carModel}</span>
           </p>
           <p>
-            Brand: <span className="font-semibold">{additionalData?.carBrand}</span>
+            Brand:{" "}
+            <span className="font-semibold">{additionalData?.carBrand}</span>
           </p>
           <p>
             No of Seats:{" "}
@@ -58,16 +58,21 @@ const Contract = () => {
           </p>
           <p>
             Auto/Manual:{" "}
-            <span className="font-semibold">{additionalData?.transmission}</span>
+            <span className="font-semibold">
+              {additionalData?.transmission}
+            </span>
           </p>
           <p>
             Plate Number:{" "}
-            <span className="font-semibold">{additionalData?.licensePlate}</span>
+            <span className="font-semibold">
+              {additionalData?.licensePlate}
+            </span>
           </p>
           <p>
-            Total Amount: <span className="font-semibold">{additionalData?.totalRent}</span>
+            Total Amount:{" "}
+            <span className="font-semibold">{additionalData?.totalRent}</span>
           </p>
-        
+
           <p className="mt-6 text-center">
             The customer is responsible for any kind of damage to the vehicle
             during the rental period. All repair costs will be charged to the
@@ -85,6 +90,7 @@ const Contract = () => {
             By pressing the CONFIRM button, you agree to these terms and cannot
             deny afterwards!
           </p>
+
           <Link to="/Rentedvehicle">
             <div className="flex justify-center px-4 py-2 mt-6 font-bold text-white bg-gray-400  hover:bg-gray-500 rounded-lg">
               <button className="text-white">CONFIRM</button>

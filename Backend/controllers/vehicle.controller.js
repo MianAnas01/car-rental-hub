@@ -8,16 +8,15 @@ const uploadVehicle = async (req, res) => {
     if (!req.file) {
       return res.status(400).send("Bad Request: Image file is required.");
     }
-    req.file.path = path.join("uploads", req.file.filename); // Store the file path
+    req.file.path = path.join("uploads", req.file.filename); 
 
     console.log(req.body, req.file);
-    const imageUrl = `${process.env.BACKEND_URL}/${req.file.path}`; // Path to the uploaded image
+    const imageUrl = `${process.env.BACKEND_URL}/${req.file.path}`; 
 
     const NewVehicle = await Vehicle.create({
       carBrand: req.body.carBrand,
       carModel: req.body.carModel,
       noOfSeats: req.body.noOfSeats,
-      // Set the property dynamically based on the value of manual/auto
       rentPerDay: req.body.rentPerDay,
       carlocation: req.body.carLocation,
       licensePlate: req.body.licensePlate,
@@ -28,7 +27,7 @@ const uploadVehicle = async (req, res) => {
       status: "active",
     });
 
-    res.status(200).json({NewVehicle});
+    res.status(200).json({ NewVehicle });
   } catch (error) {
     console.error("Error during uploading vehicle", error);
     res.status(500).json({ message: "Internal server error" });
@@ -40,22 +39,17 @@ const GetVehicles = async (req, res) => {
     let vehicles;
     const vehicleId = req.body.vehicleId;
     if (vehicleId) {
-      // If a vehicle ID is provided in the URL, fetch the specific vehicle
       vehicles = await Vehicle.findById(vehicleId);
       if (!vehicles) {
         return res.status(404).send("Vehicle not found.");
       }
     } else if (req.body.rentalId) {
-      // If rentalId is provided in the request body, filter vehicles by rentalId
       vehicles = await Vehicle.find({ rentalId: req.body.rentalId });
-      
     } else if (req.body.customerId) {
       vehicles = await Vehicle.find({ customerId: req.body.customerId });
     } else if (req.body.all) {
-      vehicles = await Vehicle.find({ status: { $ne: 'disable' } });
-  }
-  
-
+      vehicles = await Vehicle.find({ status: { $ne: "disable" } });
+    }
 
     res.status(200).json({ vehicles });
   } catch (error) {
@@ -69,7 +63,6 @@ const checkVehicleAvailability = async (req, res) => {
   try {
     const { vehicleId, startDate, endDate } = req.body;
 
-    // Query to check if the vehicle is already booked between the provided dates
     const isBooked = await Booking.find({
       vehicleId: vehicleId,
       $or: [
@@ -79,19 +72,15 @@ const checkVehicleAvailability = async (req, res) => {
     });
 
     if (isBooked.length > 0) {
-      return res
-        .status(200)
-        .json({
-          available: false,
-          message: "Vehicle is not available for the selected dates.",
-        });
+      return res.status(200).json({
+        available: false,
+        message: "Vehicle is not available for the selected dates.",
+      });
     } else {
-      return res
-        .status(200)
-        .json({
-          available: true,
-          message: "Vehicle is available for the selected dates.",
-        });
+      return res.status(200).json({
+        available: true,
+        message: "Vehicle is available for the selected dates.",
+      });
     }
   } catch (error) {
     console.error(error.message);
@@ -111,7 +100,7 @@ const statusUpdate = async (req, res) => {
     );
 
     if (item) {
-      res.status(200).json({item});
+      res.status(200).json({ item });
     } else {
       res.status(404).send("This vehicle is not available.");
     }
@@ -123,17 +112,59 @@ const statusUpdate = async (req, res) => {
 
 // remove vehicle
 const removeVehicle = async (req, res) => {
- 
   try {
     const remove = await Vehicle.findByIdAndUpdate(req.params.id);
     if (!remove) {
-      res.status(404).json({message: "vehicle not removed, try with your own id"})
+      res
+        .status(404)
+        .json({ message: "vehicle not removed, try with your own id" });
     }
-    res.status(200).json({message: "vehicle removed successfully"})
+    res.status(200).json({ message: "vehicle removed successfully" });
   } catch (error) {
     res.status(500).send("Internal Server Error.");
   }
+};
+
+// Rental updates vehicle status
+const rentalStatusUpdate = async (req, res) => {
+//   try {
+//     const vehicleId = req.params.id;
+//     const status = req.params.status;
+//     const item = await Vehicle.findByIdAndUpdate(
+//       vehicleId,
+//       { $set: { status: status == "active" ? "inactive" : "active" } },
+//       { new: true }
+//     );
+
+//     if (item) {
+//       res.status(200).json({ item });
+//     } else {
+//       res.status(404).send("This vehicle is not available.");
+//     }
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).send("Internal Server Error.");
+//   }
+// };
+
+try {
+  const vehicleId = req.params.id;
+  const vehicle = await Vehicle.findById(vehicleId);
+
+  if (!vehicle) {
+    return res.status(404).send("Vehicle not found");
+  }
+
+  // Toggle the status
+  vehicle.status = vehicle.status === "active" ? "inactive" : "active";
+  await vehicle.save();
+
+  res.status(200).json({ item: vehicle });
+} catch (error) {
+  console.error(error.message);
+  res.status(500).send("Internal Server Error");
 }
+};
 
 
 module.exports = {
@@ -142,4 +173,5 @@ module.exports = {
   checkVehicleAvailability,
   removeVehicle,
   statusUpdate,
+  rentalStatusUpdate,
 };

@@ -36,6 +36,15 @@ console.log(user,"user data")
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  if (formData.cnic.length !== 13) {
+    setError("CNIC must be 13 characters long.");
+    return;
+  }
+  if (formData.contactNo.length !== 11) {
+    setError("Contact number must be 11 characters long.");
+    return;
+  }
   
   // Validate dates
   if (!isValidDateRange(formData.startDate, formData.endDate)) {
@@ -123,6 +132,7 @@ const isValidDateRange = (startDate, endDate) => {
               name="contactNo"
               value={formData.contactNo}
               onChange={handleChange}
+              minLength={11}
               placeholder="Contact No."
               className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
             />
@@ -142,6 +152,7 @@ const isValidDateRange = (startDate, endDate) => {
               type="text"
               name="cnic"
               value={formData.cnic}
+              minLength={13}
               onChange={handleChange}
               placeholder="CNIC"
               className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
@@ -181,3 +192,4 @@ const isValidDateRange = (startDate, endDate) => {
 };
 
 export default BookNow;
+
