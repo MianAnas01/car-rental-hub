@@ -33,13 +33,6 @@ app.get("/test", (req, res) => {
   res.send("server working");
 });
 
-app.use(express.static(path.join(__dirname, "build")));
-
-// Catch-all route for serving React's index.html for client-side routing
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
 app.listen(port, () => console.log(`node server running on port ${port}`));
 
 dbConnection();
