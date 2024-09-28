@@ -1,12 +1,13 @@
 # React + Vite
 
 <!-- To run the server  -->
+
 npm run dev
 
 <!-- to run backend -->
-go to backend directory and run following command 
-nodemon server 
 
+go to backend directory and run following command
+npm start
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
